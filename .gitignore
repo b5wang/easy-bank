@@ -1,0 +1,3 @@
+# files or directories ignored
+.DS_Store
+target/
