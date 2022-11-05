@@ -1,0 +1,6 @@
+1. change port by command options
+java -jar -Dserver.port=8091 spring-5.jar
+java -jar -Dserver.port=8092 spring-5.jar
+java -jar -Dserver.port=8093 spring-5.jar
+or
+java -jar spring-5.jar --server.port=8083

@@ -1,0 +1,32 @@
+1.HikariCP class version not support
+problem with class file or dependent class;
+nested exception is java.lang.UnsupportedClassVersionError: com/zaxxer/hikari/HikariConfig has been compiled by a more recent version of the Java Runtime (class file version 55.0),
+this version of the Java Runtime only recognizes class file versions up to 52.0 (unable to load class [com.zaxxer.hikari.HikariConfig])
+
+Class verions and jdk versions mapping:
+49 = Java 5
+50 = Java 6
+51 = Java 7
+52 = Java 8
+53 = Java 9
+54 = Java 10
+55 = Java 11
+56 = Java 12
+57 = Java 13
+58 = Java 14
+59 = Java 15
+60 = Java 16
+61 = Java 17
+62 = Java 18
+63 = Java 19
+
+2. nested exception is java.lang.RuntimeException: java.lang.ClassCastException: Cannot cast com.mysql.cj.jdbc.Driver to javax.sql.DataSource
+Caused by: org.springframework.beans.factory.BeanCreationException:
+Error creating bean with name 'jdbcTemplate' defined in ServletContext resource [/WEB-INF/spring-config/applicationConfig.xml]:
+Cannot resolve reference to bean 'dataSource' while setting bean property 'dataSource';
+nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'dataSource'
+defined in ServletContext resource [/WEB-INF/spring-config/applicationConfig.xml]: Bean instantiation via constructor failed;
+nested exception is org.springframework.beans.BeanInstantiationException: Failed to instantiate [com.zaxxer.hikari.HikariDataSource]:
+Constructor threw exception; nested exception is java.lang.RuntimeException: java.lang.ClassCastException: Cannot cast com.mysql.cj.jdbc.Driver to javax.sql.DataSource
+
+Reference: https://github.com/brettwooldridge/HikariCP#initialization
