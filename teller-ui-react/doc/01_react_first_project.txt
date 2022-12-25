@@ -1,0 +1,8 @@
+# Install node.js
+node -v
+npm -v //node package manager
+
+
+#------------------------------------------------------------------------------
+# Create an example for easy-bank project
+npx create-react-app teller-ui-react

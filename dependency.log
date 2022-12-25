@@ -1,0 +1,310 @@
+[INFO] Scanning for projects...
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO] 
+[INFO] easy-bank                                                          [pom]
+[INFO] teller-ui                                                          [war]
+[INFO] teller-api                                                         [war]
+[INFO] core-banking                                                       [war]
+[INFO] batch-processing                                                   [war]
+[INFO] 
+[INFO] ------------------------< com.b5wang:easy-bank >------------------------
+[INFO] Building easy-bank 0.0.1-SNAPSHOT                                  [1/5]
+[INFO] --------------------------------[ pom ]---------------------------------
+[INFO] 
+[INFO] --- maven-dependency-plugin:2.8:tree (default-cli) @ easy-bank ---
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/doxia/doxia-sink-api/1.0-alpha-10/doxia-sink-api-1.0-alpha-10.pom
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/doxia/doxia-sink-api/1.0-alpha-10/doxia-sink-api-1.0-alpha-10.pom (0 B at 0 B/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/doxia/doxia/1.0-alpha-10/doxia-1.0-alpha-10.pom
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/doxia/doxia/1.0-alpha-10/doxia-1.0-alpha-10.pom (0 B at 0 B/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/reporting/maven-reporting-impl/2.0.5/maven-reporting-impl-2.0.5.pom
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/reporting/maven-reporting-impl/2.0.5/maven-reporting-impl-2.0.5.pom (0 B at 0 B/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/doxia/doxia-core/1.0/doxia-core-1.0.pom
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/doxia/doxia-core/1.0/doxia-core-1.0.pom (0 B at 0 B/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-utils/1.5.7/plexus-utils-1.5.7.pom
+Downloaded from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-utils/1.5.7/plexus-utils-1.5.7.pom (0 B at 0 B/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/doxia/doxia-site-renderer/1.0/doxia-site-renderer-1.0.pom
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/doxia/doxia-site-renderer/1.0/doxia-site-renderer-1.0.pom (0 B at 0 B/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/doxia/doxia-sitetools/1.0/doxia-sitetools-1.0.pom
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/doxia/doxia-sitetools/1.0/doxia-sitetools-1.0.pom (0 B at 0 B/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/doxia/doxia-decoration-model/1.0/doxia-decoration-model-1.0.pom
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/doxia/doxia-decoration-model/1.0/doxia-decoration-model-1.0.pom (0 B at 0 B/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/doxia/doxia-module-apt/1.0/doxia-module-apt-1.0.pom
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/doxia/doxia-module-apt/1.0/doxia-module-apt-1.0.pom (0 B at 0 B/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/doxia/doxia-modules/1.0/doxia-modules-1.0.pom
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/doxia/doxia-modules/1.0/doxia-modules-1.0.pom (0 B at 0 B/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/doxia/doxia-module-fml/1.0/doxia-module-fml-1.0.pom
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/doxia/doxia-module-fml/1.0/doxia-module-fml-1.0.pom (0 B at 0 B/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/doxia/doxia-module-xdoc/1.0/doxia-module-xdoc-1.0.pom
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/doxia/doxia-module-xdoc/1.0/doxia-module-xdoc-1.0.pom (0 B at 0 B/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/doxia/doxia-module-xhtml/1.0/doxia-module-xhtml-1.0.pom
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/doxia/doxia-module-xhtml/1.0/doxia-module-xhtml-1.0.pom (0 B at 0 B/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/shared/maven-doxia-tools/1.0.2/maven-doxia-tools-1.0.2.pom
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/shared/maven-doxia-tools/1.0.2/maven-doxia-tools-1.0.2.pom (0 B at 0 B/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/shared/maven-shared-components/11/maven-shared-components-11.pom
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/shared/maven-shared-components/11/maven-shared-components-11.pom (0 B at 0 B/s)
+Downloading from central: https://repo.maven.apache.org/maven2/commons-validator/commons-validator/1.2.0/commons-validator-1.2.0.pom
+Downloaded from central: https://repo.maven.apache.org/maven2/commons-validator/commons-validator/1.2.0/commons-validator-1.2.0.pom (0 B at 0 B/s)
+Downloading from central: https://repo.maven.apache.org/maven2/xml-apis/xml-apis/2.0.2/xml-apis-2.0.2.pom
+Downloaded from central: https://repo.maven.apache.org/maven2/xml-apis/xml-apis/2.0.2/xml-apis-2.0.2.pom (0 B at 0 B/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-archiver/2.3/plexus-archiver-2.3.pom
+Downloaded from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-archiver/2.3/plexus-archiver-2.3.pom (0 B at 0 B/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-io/2.0.6/plexus-io-2.0.6.pom
+Downloaded from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-io/2.0.6/plexus-io-2.0.6.pom (0 B at 0 B/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-components/1.2/plexus-components-1.2.pom
+Downloaded from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-components/1.2/plexus-components-1.2.pom (0 B at 0 B/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-utils/3.0.9/plexus-utils-3.0.9.pom
+Downloaded from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-utils/3.0.9/plexus-utils-3.0.9.pom (0 B at 0 B/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/shared/maven-dependency-analyzer/1.4/maven-dependency-analyzer-1.4.pom
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/shared/maven-dependency-analyzer/1.4/maven-dependency-analyzer-1.4.pom (0 B at 0 B/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-project/2.0.5/maven-project-2.0.5.pom
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-project/2.0.5/maven-project-2.0.5.pom (0 B at 0 B/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-settings/2.0.5/maven-settings-2.0.5.pom
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-settings/2.0.5/maven-settings-2.0.5.pom (0 B at 0 B/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-profile/2.0.5/maven-profile-2.0.5.pom
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-profile/2.0.5/maven-profile-2.0.5.pom (0 B at 0 B/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-artifact-manager/2.0.5/maven-artifact-manager-2.0.5.pom
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-artifact-manager/2.0.5/maven-artifact-manager-2.0.5.pom (0 B at 0 B/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-repository-metadata/2.0.5/maven-repository-metadata-2.0.5.pom
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-repository-metadata/2.0.5/maven-repository-metadata-2.0.5.pom (0 B at 0 B/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/shared/maven-dependency-tree/2.1/maven-dependency-tree-2.1.pom
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/shared/maven-dependency-tree/2.1/maven-dependency-tree-2.1.pom (0 B at 0 B/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-project/2.2.0/maven-project-2.2.0.pom
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-project/2.2.0/maven-project-2.2.0.pom (0 B at 0 B/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven/2.2.0/maven-2.2.0.pom
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven/2.2.0/maven-2.2.0.pom (0 B at 0 B/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-settings/2.2.0/maven-settings-2.2.0.pom
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-settings/2.2.0/maven-settings-2.2.0.pom (0 B at 0 B/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-model/2.2.0/maven-model-2.2.0.pom
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-model/2.2.0/maven-model-2.2.0.pom (0 B at 0 B/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-profile/2.2.0/maven-profile-2.2.0.pom
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-profile/2.2.0/maven-profile-2.2.0.pom (0 B at 0 B/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-artifact-manager/2.2.0/maven-artifact-manager-2.2.0.pom
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-artifact-manager/2.2.0/maven-artifact-manager-2.2.0.pom (0 B at 0 B/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-repository-metadata/2.2.0/maven-repository-metadata-2.2.0.pom
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-repository-metadata/2.2.0/maven-repository-metadata-2.2.0.pom (0 B at 0 B/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-artifact/2.2.0/maven-artifact-2.2.0.pom
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-artifact/2.2.0/maven-artifact-2.2.0.pom (0 B at 0 B/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-plugin-registry/2.2.0/maven-plugin-registry-2.2.0.pom
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/maven-plugin-registry/2.2.0/maven-plugin-registry-2.2.0.pom (0 B at 0 B/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/shared/maven-invoker/2.0.11/maven-invoker-2.0.11.pom
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/shared/maven-invoker/2.0.11/maven-invoker-2.0.11.pom (0 B at 0 B/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/reporting/maven-reporting-impl/2.0.5/maven-reporting-impl-2.0.5.jar
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/doxia/doxia-core/1.0/doxia-core-1.0.jar
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/shared/maven-doxia-tools/1.0.2/maven-doxia-tools-1.0.2.jar
+Downloading from central: https://repo.maven.apache.org/maven2/commons-validator/commons-validator/1.2.0/commons-validator-1.2.0.jar
+Downloading from central: https://repo.maven.apache.org/maven2/xml-apis/xml-apis/1.0.b2/xml-apis-1.0.b2.jar
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/doxia/doxia-core/1.0/doxia-core-1.0.jar (0 B at 0 B/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/doxia/doxia-site-renderer/1.0/doxia-site-renderer-1.0.jar
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/doxia/doxia-site-renderer/1.0/doxia-site-renderer-1.0.jar (0 B at 0 B/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/doxia/doxia-decoration-model/1.0/doxia-decoration-model-1.0.jar
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/shared/maven-doxia-tools/1.0.2/maven-doxia-tools-1.0.2.jar (0 B at 0 B/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/doxia/doxia-module-apt/1.0/doxia-module-apt-1.0.jar
+Downloaded from central: https://repo.maven.apache.org/maven2/commons-validator/commons-validator/1.2.0/commons-validator-1.2.0.jar (0 B at 0 B/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/doxia/doxia-module-fml/1.0/doxia-module-fml-1.0.jar
+Downloaded from central: https://repo.maven.apache.org/maven2/xml-apis/xml-apis/1.0.b2/xml-apis-1.0.b2.jar (0 B at 0 B/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/doxia/doxia-module-xdoc/1.0/doxia-module-xdoc-1.0.jar
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/doxia/doxia-decoration-model/1.0/doxia-decoration-model-1.0.jar (0 B at 0 B/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/doxia/doxia-module-xhtml/1.0/doxia-module-xhtml-1.0.jar
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/reporting/maven-reporting-impl/2.0.5/maven-reporting-impl-2.0.5.jar (0 B at 0 B/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-archiver/2.3/plexus-archiver-2.3.jar
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/doxia/doxia-module-apt/1.0/doxia-module-apt-1.0.jar (0 B at 0 B/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-utils/3.0.9/plexus-utils-3.0.9.jar
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/doxia/doxia-module-fml/1.0/doxia-module-fml-1.0.jar (0 B at 0 B/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-io/2.0.6/plexus-io-2.0.6.jar
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/doxia/doxia-module-xdoc/1.0/doxia-module-xdoc-1.0.jar (0 B at 0 B/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/shared/maven-dependency-analyzer/1.4/maven-dependency-analyzer-1.4.jar
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/doxia/doxia-module-xhtml/1.0/doxia-module-xhtml-1.0.jar (0 B at 0 B/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/shared/maven-dependency-tree/2.1/maven-dependency-tree-2.1.jar
+Downloaded from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-archiver/2.3/plexus-archiver-2.3.jar (0 B at 0 B/s)
+Downloading from central: https://repo.maven.apache.org/maven2/org/apache/maven/shared/maven-invoker/2.0.11/maven-invoker-2.0.11.jar
+Downloaded from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-utils/3.0.9/plexus-utils-3.0.9.jar (0 B at 0 B/s)
+Downloaded from central: https://repo.maven.apache.org/maven2/org/codehaus/plexus/plexus-io/2.0.6/plexus-io-2.0.6.jar (0 B at 0 B/s)
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/shared/maven-dependency-analyzer/1.4/maven-dependency-analyzer-1.4.jar (0 B at 0 B/s)
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/shared/maven-dependency-tree/2.1/maven-dependency-tree-2.1.jar (0 B at 0 B/s)
+Downloaded from central: https://repo.maven.apache.org/maven2/org/apache/maven/shared/maven-invoker/2.0.11/maven-invoker-2.0.11.jar (0 B at 0 B/s)
+[INFO] com.b5wang:easy-bank:pom:0.0.1-SNAPSHOT
+[INFO] +- javax.servlet:javax.servlet-api:jar:3.1.0:compile
+[INFO] +- org.springframework:spring-core:jar:5.3.23:compile
+[INFO] +- org.springframework:spring-beans:jar:5.3.23:compile
+[INFO] +- org.springframework:spring-context:jar:5.3.23:compile
+[INFO] +- org.springframework:spring-aop:jar:5.3.23:compile
+[INFO] +- org.springframework:spring-jcl:jar:5.3.23:compile
+[INFO] +- org.springframework:spring-expression:jar:5.3.23:compile
+[INFO] +- org.springframework:spring-web:jar:5.3.23:compile
+[INFO] +- org.springframework:spring-webmvc:jar:5.3.23:compile
+[INFO] +- org.springframework:spring-aspects:jar:5.3.23:compile
+[INFO] |  \- org.aspectj:aspectjweaver:jar:1.9.7:compile
+[INFO] +- org.springframework:spring-orm:jar:5.3.23:compile
+[INFO] |  +- org.springframework:spring-jdbc:jar:5.3.23:compile
+[INFO] |  \- org.springframework:spring-tx:jar:5.3.23:compile
+[INFO] +- org.springframework.data:spring-data-jdbc:jar:2.4.5:compile
+[INFO] |  +- org.springframework.data:spring-data-relational:jar:2.4.5:compile
+[INFO] |  \- org.springframework.data:spring-data-commons:jar:2.7.5:compile
+[INFO] +- org.springframework.data:spring-data-jpa:jar:2.7.5:compile
+[INFO] +- com.zaxxer:HikariCP:jar:4.0.3:compile
+[INFO] +- com.mysql:mysql-connector-j:jar:8.0.31:compile
+[INFO] |  \- com.google.protobuf:protobuf-java:jar:3.19.4:compile
+[INFO] +- org.projectlombok:lombok:jar:1.18.24:compile
+[INFO] +- org.slf4j:slf4j-api:jar:2.0.3:compile
+[INFO] +- org.apache.logging.log4j:log4j-slf4j2-impl:jar:2.19.0:compile
+[INFO] +- org.apache.logging.log4j:log4j-api:jar:2.19.0:compile
+[INFO] +- org.apache.logging.log4j:log4j-core:jar:2.19.0:compile
+[INFO] +- org.springframework:spring-test:jar:5.3.23:test
+[INFO] \- junit:junit:jar:4.13.2:test
+[INFO]    \- org.hamcrest:hamcrest-core:jar:1.3:test
+[INFO] 
+[INFO] -------------------< com.b5wang.easy-bank:teller-ui >-------------------
+[INFO] Building teller-ui 0.0.1-SNAPSHOT                                  [2/5]
+[INFO] --------------------------------[ war ]---------------------------------
+[INFO] 
+[INFO] --- maven-dependency-plugin:2.8:tree (default-cli) @ teller-ui ---
+[INFO] com.b5wang.easy-bank:teller-ui:war:0.0.1-SNAPSHOT
+[INFO] +- javax.servlet:javax.servlet-api:jar:3.1.0:compile
+[INFO] +- org.springframework:spring-core:jar:5.3.23:compile
+[INFO] +- org.springframework:spring-beans:jar:5.3.23:compile
+[INFO] +- org.springframework:spring-context:jar:5.3.23:compile
+[INFO] +- org.springframework:spring-aop:jar:5.3.23:compile
+[INFO] +- org.springframework:spring-jcl:jar:5.3.23:compile
+[INFO] +- org.springframework:spring-expression:jar:5.3.23:compile
+[INFO] +- org.springframework:spring-web:jar:5.3.23:compile
+[INFO] +- org.springframework:spring-webmvc:jar:5.3.23:compile
+[INFO] +- org.springframework:spring-aspects:jar:5.3.23:compile
+[INFO] |  \- org.aspectj:aspectjweaver:jar:1.9.7:compile
+[INFO] +- org.springframework:spring-orm:jar:5.3.23:compile
+[INFO] |  +- org.springframework:spring-jdbc:jar:5.3.23:compile
+[INFO] |  \- org.springframework:spring-tx:jar:5.3.23:compile
+[INFO] +- org.springframework.data:spring-data-jdbc:jar:2.4.5:compile
+[INFO] |  +- org.springframework.data:spring-data-relational:jar:2.4.5:compile
+[INFO] |  \- org.springframework.data:spring-data-commons:jar:2.7.5:compile
+[INFO] +- org.springframework.data:spring-data-jpa:jar:2.7.5:compile
+[INFO] +- com.zaxxer:HikariCP:jar:4.0.3:compile
+[INFO] +- com.mysql:mysql-connector-j:jar:8.0.31:compile
+[INFO] |  \- com.google.protobuf:protobuf-java:jar:3.19.4:compile
+[INFO] +- org.projectlombok:lombok:jar:1.18.24:compile
+[INFO] +- org.slf4j:slf4j-api:jar:2.0.3:compile
+[INFO] +- org.apache.logging.log4j:log4j-slf4j2-impl:jar:2.19.0:compile
+[INFO] +- org.apache.logging.log4j:log4j-api:jar:2.19.0:compile
+[INFO] +- org.apache.logging.log4j:log4j-core:jar:2.19.0:compile
+[INFO] +- org.springframework:spring-test:jar:5.3.23:test
+[INFO] \- junit:junit:jar:4.13.2:test
+[INFO]    \- org.hamcrest:hamcrest-core:jar:1.3:test
+[INFO] 
+[INFO] ------------------< com.b5wang.easy-bank:teller-api >-------------------
+[INFO] Building teller-api 0.0.1-SNAPSHOT                                 [3/5]
+[INFO] --------------------------------[ war ]---------------------------------
+[INFO] 
+[INFO] --- maven-dependency-plugin:2.8:tree (default-cli) @ teller-api ---
+[INFO] com.b5wang.easy-bank:teller-api:war:0.0.1-SNAPSHOT
+[INFO] +- junit:junit:jar:3.8.1:test
+[INFO] +- javax.servlet:javax.servlet-api:jar:3.1.0:compile
+[INFO] +- org.springframework:spring-core:jar:5.3.23:compile
+[INFO] +- org.springframework:spring-beans:jar:5.3.23:compile
+[INFO] +- org.springframework:spring-context:jar:5.3.23:compile
+[INFO] +- org.springframework:spring-aop:jar:5.3.23:compile
+[INFO] +- org.springframework:spring-jcl:jar:5.3.23:compile
+[INFO] +- org.springframework:spring-expression:jar:5.3.23:compile
+[INFO] +- org.springframework:spring-web:jar:5.3.23:compile
+[INFO] +- org.springframework:spring-webmvc:jar:5.3.23:compile
+[INFO] +- org.springframework:spring-aspects:jar:5.3.23:compile
+[INFO] |  \- org.aspectj:aspectjweaver:jar:1.9.7:compile
+[INFO] +- org.springframework:spring-orm:jar:5.3.23:compile
+[INFO] |  +- org.springframework:spring-jdbc:jar:5.3.23:compile
+[INFO] |  \- org.springframework:spring-tx:jar:5.3.23:compile
+[INFO] +- org.springframework.data:spring-data-jdbc:jar:2.4.5:compile
+[INFO] |  +- org.springframework.data:spring-data-relational:jar:2.4.5:compile
+[INFO] |  \- org.springframework.data:spring-data-commons:jar:2.7.5:compile
+[INFO] +- org.springframework.data:spring-data-jpa:jar:2.7.5:compile
+[INFO] +- com.zaxxer:HikariCP:jar:4.0.3:compile
+[INFO] +- com.mysql:mysql-connector-j:jar:8.0.31:compile
+[INFO] |  \- com.google.protobuf:protobuf-java:jar:3.19.4:compile
+[INFO] +- org.projectlombok:lombok:jar:1.18.24:compile
+[INFO] +- org.slf4j:slf4j-api:jar:2.0.3:compile
+[INFO] +- org.apache.logging.log4j:log4j-slf4j2-impl:jar:2.19.0:compile
+[INFO] +- org.apache.logging.log4j:log4j-api:jar:2.19.0:compile
+[INFO] +- org.apache.logging.log4j:log4j-core:jar:2.19.0:compile
+[INFO] \- org.springframework:spring-test:jar:5.3.23:test
+[INFO] 
+[INFO] -----------------< com.b5wang.easy-bank:core-banking >------------------
+[INFO] Building core-banking 0.0.1-SNAPSHOT                               [4/5]
+[INFO] --------------------------------[ war ]---------------------------------
+[INFO] 
+[INFO] --- maven-dependency-plugin:2.8:tree (default-cli) @ core-banking ---
+[INFO] com.b5wang.easy-bank:core-banking:war:0.0.1-SNAPSHOT
+[INFO] +- junit:junit:jar:3.8.1:test
+[INFO] +- javax.servlet:javax.servlet-api:jar:3.1.0:compile
+[INFO] +- org.springframework:spring-core:jar:5.3.23:compile
+[INFO] +- org.springframework:spring-beans:jar:5.3.23:compile
+[INFO] +- org.springframework:spring-context:jar:5.3.23:compile
+[INFO] +- org.springframework:spring-aop:jar:5.3.23:compile
+[INFO] +- org.springframework:spring-jcl:jar:5.3.23:compile
+[INFO] +- org.springframework:spring-expression:jar:5.3.23:compile
+[INFO] +- org.springframework:spring-web:jar:5.3.23:compile
+[INFO] +- org.springframework:spring-webmvc:jar:5.3.23:compile
+[INFO] +- org.springframework:spring-aspects:jar:5.3.23:compile
+[INFO] |  \- org.aspectj:aspectjweaver:jar:1.9.7:compile
+[INFO] +- org.springframework:spring-orm:jar:5.3.23:compile
+[INFO] |  +- org.springframework:spring-jdbc:jar:5.3.23:compile
+[INFO] |  \- org.springframework:spring-tx:jar:5.3.23:compile
+[INFO] +- org.springframework.data:spring-data-jdbc:jar:2.4.5:compile
+[INFO] |  +- org.springframework.data:spring-data-relational:jar:2.4.5:compile
+[INFO] |  \- org.springframework.data:spring-data-commons:jar:2.7.5:compile
+[INFO] +- org.springframework.data:spring-data-jpa:jar:2.7.5:compile
+[INFO] +- com.zaxxer:HikariCP:jar:4.0.3:compile
+[INFO] +- com.mysql:mysql-connector-j:jar:8.0.31:compile
+[INFO] |  \- com.google.protobuf:protobuf-java:jar:3.19.4:compile
+[INFO] +- org.projectlombok:lombok:jar:1.18.24:compile
+[INFO] +- org.slf4j:slf4j-api:jar:2.0.3:compile
+[INFO] +- org.apache.logging.log4j:log4j-slf4j2-impl:jar:2.19.0:compile
+[INFO] +- org.apache.logging.log4j:log4j-api:jar:2.19.0:compile
+[INFO] +- org.apache.logging.log4j:log4j-core:jar:2.19.0:compile
+[INFO] \- org.springframework:spring-test:jar:5.3.23:test
+[INFO] 
+[INFO] ---------------< com.b5wang.easy-bank:batch-processing >----------------
+[INFO] Building batch-processing 0.0.1-SNAPSHOT                           [5/5]
+[INFO] --------------------------------[ war ]---------------------------------
+[INFO] 
+[INFO] --- maven-dependency-plugin:2.8:tree (default-cli) @ batch-processing ---
+[INFO] com.b5wang.easy-bank:batch-processing:war:0.0.1-SNAPSHOT
+[INFO] +- junit:junit:jar:3.8.1:test
+[INFO] +- javax.servlet:javax.servlet-api:jar:3.1.0:compile
+[INFO] +- org.springframework:spring-core:jar:5.3.23:compile
+[INFO] +- org.springframework:spring-beans:jar:5.3.23:compile
+[INFO] +- org.springframework:spring-context:jar:5.3.23:compile
+[INFO] +- org.springframework:spring-aop:jar:5.3.23:compile
+[INFO] +- org.springframework:spring-jcl:jar:5.3.23:compile
+[INFO] +- org.springframework:spring-expression:jar:5.3.23:compile
+[INFO] +- org.springframework:spring-web:jar:5.3.23:compile
+[INFO] +- org.springframework:spring-webmvc:jar:5.3.23:compile
+[INFO] +- org.springframework:spring-aspects:jar:5.3.23:compile
+[INFO] |  \- org.aspectj:aspectjweaver:jar:1.9.7:compile
+[INFO] +- org.springframework:spring-orm:jar:5.3.23:compile
+[INFO] |  +- org.springframework:spring-jdbc:jar:5.3.23:compile
+[INFO] |  \- org.springframework:spring-tx:jar:5.3.23:compile
+[INFO] +- org.springframework.data:spring-data-jdbc:jar:2.4.5:compile
+[INFO] |  +- org.springframework.data:spring-data-relational:jar:2.4.5:compile
+[INFO] |  \- org.springframework.data:spring-data-commons:jar:2.7.5:compile
+[INFO] +- org.springframework.data:spring-data-jpa:jar:2.7.5:compile
+[INFO] +- com.zaxxer:HikariCP:jar:4.0.3:compile
+[INFO] +- com.mysql:mysql-connector-j:jar:8.0.31:compile
+[INFO] |  \- com.google.protobuf:protobuf-java:jar:3.19.4:compile
+[INFO] +- org.projectlombok:lombok:jar:1.18.24:compile
+[INFO] +- org.slf4j:slf4j-api:jar:2.0.3:compile
+[INFO] +- org.apache.logging.log4j:log4j-slf4j2-impl:jar:2.19.0:compile
+[INFO] +- org.apache.logging.log4j:log4j-api:jar:2.19.0:compile
+[INFO] +- org.apache.logging.log4j:log4j-core:jar:2.19.0:compile
+[INFO] \- org.springframework:spring-test:jar:5.3.23:test
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary for easy-bank 0.0.1-SNAPSHOT:
+[INFO] 
+[INFO] easy-bank .......................................... SUCCESS [ 10.995 s]
+[INFO] teller-ui .......................................... SUCCESS [  0.049 s]
+[INFO] teller-api ......................................... SUCCESS [  0.013 s]
+[INFO] core-banking ....................................... SUCCESS [  0.011 s]
+[INFO] batch-processing ................................... SUCCESS [  0.012 s]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  11.294 s
+[INFO] Finished at: 2022-11-13T18:41:45+08:00
+[INFO] ------------------------------------------------------------------------

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserDao {
 
-    //@Autowired
+    @Autowired
     private JdbcTemplate jdbcTemplate;
 
     public void createUser(){

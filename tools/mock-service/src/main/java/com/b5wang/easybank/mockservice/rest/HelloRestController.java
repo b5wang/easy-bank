@@ -14,14 +14,18 @@ public class HelloRestController {
 
     @GetMapping("/hello")
     @ResponseBody
-    public String hello(@RequestParam(name="name") String name){
+    public String hello(@RequestParam(name="name") String name) throws InterruptedException {
+        log.info("hello service start");
+        // simulate the processing time 5 sec
+        Thread.sleep(5000);
+
         String msg = null;
         if(name == null){
             msg = "Hello!";
         }else{
             msg = "Hello, " + name + "!";
         }
-        log.info(msg);
+        log.info("hello service end! message={}",msg);
         return msg;
     }
 
