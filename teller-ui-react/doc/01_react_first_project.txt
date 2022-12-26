@@ -6,3 +6,5 @@ npm -v //node package manager
 #------------------------------------------------------------------------------
 # Create an example for easy-bank project
 npx create-react-app teller-ui-react
+npm install bootstrap --save
+npm add axios
