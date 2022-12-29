@@ -10,13 +10,13 @@
 
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
-            <ThresholdFilter level="DEBUG" onMatch="ACCEPT" onMismatch="DENY" />
+            <ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY" />
             <PatternLayout pattern="${log_pattern}"/>
         </Console>
 
-        <RollingFile name="RollingFile" fileName="${log_path}/teller-ui.log" filePattern="${log_path}/teller-ui-%d{yyyy-MM-dd}-%i.log">
+        <RollingFile name="RollingFile" fileName="${log_path}/teller-api.log" filePattern="${log_path}/teller-api-%d{yyyy-MM-dd}-%i.log">
             <Filters>
-                <ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY" />
+                <ThresholdFilter level="DEBUG" onMatch="ACCEPT" onMismatch="DENY" />
             </Filters>
             <PatternLayout pattern="${log_pattern}"/>
             <SizeBasedTriggeringPolicy size="${log_size}"/>
