@@ -1,8 +1,6 @@
-
-
 class ShoppingList extends React.Component {
     render() {
-        return (
+        return e(
             <div className="shopping-list">
                 <h1>Shopping List for {this.props.name}</h1>
                 <ul>
@@ -16,6 +14,9 @@ class ShoppingList extends React.Component {
 }
 
 ReactDOM.render(
-    <Hello name="Tom Cat"/>,
+    <ShoppingList name="Tom Cat"/>,
     document.getElementById('shoppingList')
   );
+
+
+document.querySelector("#shoppingList")
