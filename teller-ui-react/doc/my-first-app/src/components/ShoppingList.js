@@ -17,6 +17,3 @@ ReactDOM.render(
     <ShoppingList name="Tom Cat"/>,
     document.getElementById('shoppingList')
   );
-
-
-document.querySelector("#shoppingList")
