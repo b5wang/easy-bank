@@ -2,7 +2,7 @@ Reference:
 https://reactjs.org/docs/create-a-new-react-app.html#create-react-app
 https://reactjs.org/tutorial/tutorial.html
 
-
+##1
 install nodejs
 npx create-react-app <app-name>
 cd <app-name>
@@ -10,3 +10,25 @@ npm start
 http://localhost:3000
 
 
+##2
+cd src
+del *
+create index.css in src
+create index.js in src
+
+##3 JSX
+React component class, or React component type. 
+A component takes in parameters, called props (short for “properties”), 
+and returns a hierarchy of views to display via the render method.
+
+The render method returns a description of what you want to see on the screen. 
+React takes the description and displays the result. 
+In particular, render returns a React element, which is a lightweight description of what to render. 
+Most React developers use a special syntax called “JSX” which makes these structures easier to write. 
+
+******
+The <div /> syntax is transformed at build time to React.createElement('div'). The example above is equivalent to
+return React.createElement('div', {className: 'shopping-list'},
+    React.createElement('h1', /* ... h1 children ... */),
+    React.createElement('ul', /* ... ul children ... */)
+);
