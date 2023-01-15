@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @RestController
@@ -45,6 +46,14 @@ public class UserController {
     public String login(@RequestParam String username, @RequestParam String password){
         log.info("login, username: {}, password: {}", username, password);
         return "OK";
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/users")
+    @ResponseBody
+    public String create(@RequestBody User user){
+        String id = UUID.randomUUID().toString();
+        log.info("User name: {}, id: {}", user.getUsername(),id);
+        return id;
     }
 
 

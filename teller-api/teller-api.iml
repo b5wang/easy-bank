@@ -24,6 +24,11 @@
     <orderEntry type="library" name="Maven: org.springframework:spring-orm:5.3.23" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-jdbc:5.3.23" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-tx:5.3.23" level="project" />
+    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-core:2.14.1" level="project" />
+    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.14.1" level="project" />
+    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.14.1" level="project" />
+    <orderEntry type="library" name="Maven: org.codehaus.jackson:jackson-core-asl:1.9.13" level="project" />
+    <orderEntry type="library" name="Maven: org.codehaus.jackson:jackson-mapper-asl:1.9.13" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.data:spring-data-jdbc:2.4.5" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.data:spring-data-relational:2.4.5" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.data:spring-data-commons:2.7.5" level="project" />
