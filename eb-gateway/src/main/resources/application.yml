@@ -1,0 +1,13 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: eb-gateway
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+

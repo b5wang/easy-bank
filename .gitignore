@@ -1,4 +1,6 @@
-# files or directories ignored
 .DS_Store
+.idea/
+*.iml
 target/
-node_modules/
+*.log
+

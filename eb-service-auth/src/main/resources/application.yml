@@ -1,0 +1,13 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: eb-service-auth
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
