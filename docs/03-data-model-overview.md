@@ -1,6 +1,8 @@
-# 数据结构设计概览 / Data Model Overview
+# 数据结构设计概览
+*Data Model Overview*
 
-## 1. 文档目标 / Document Goal
+## 1. 文档目标
+*Document Goal*
 
 根据当前协作约定，在进入编码之前必须先明确业务数据对象及其关系。这份文档用于给出本项目第一版数据库结构设计概览，明确每个微服务拥有哪些核心表，以及不同业务对象之间如何关联。  
 According to the current collaboration rules, the business data objects and their relationships must be defined before coding begins. This document provides the first-pass database design overview for the project and clarifies which core tables belong to each microservice and how the business objects relate to one another.
@@ -8,7 +10,8 @@ According to the current collaboration rules, the business data objects and thei
 这里的设计目标不是追求生产级细节完整度，而是以最小结构表达清楚数据归属、主流程状态和后续系统设计演示所需的关系。  
 The goal here is not to capture every production-grade detail. It is to use the smallest useful structure to clearly express data ownership, main-flow state, and the relationships needed for later systems-design demonstrations.
 
-## 2. 数据归属原则 / Data Ownership Principles
+## 2. 数据归属原则
+*Data Ownership Principles*
 
 每个微服务有独立数据库，或者至少在逻辑设计上有独立 schema。跨服务引用应尽量通过业务主键或唯一编码完成，而不是直接依赖其他服务数据库的外键。  
 Each microservice should have its own database, or at least its own logical schema. Cross-service references should be modeled through business keys or unique identifiers instead of direct foreign-key dependencies on another service’s database.
@@ -19,7 +22,8 @@ Account balances belong only to the account service, transfer orders belong only
 数据库表主键统一使用雪花 ID。实现上建议由应用侧统一生成 64 位整数主键，数据库字段类型优先使用 `BIGINT`，避免在各服务内部混用自增主键和 UUID。  
 All database tables should use Snowflake IDs as their primary-key strategy. In practice, the application layer should generate unified 64-bit integer IDs, and database columns should use `BIGINT` wherever possible, avoiding a mix of auto-increment keys and UUIDs across services.
 
-## 3. 各服务核心数据对象 / Core Data Objects by Service
+## 3. 各服务核心数据对象
+*Core Data Objects by Service*
 
 ### 3.1 eb-service-auth
 
@@ -115,7 +119,8 @@ Recommended core tables:
 `eb_retry_task` 记录待重试对象和当前重试状态，`eb_retry_report` 记录交付给业务人员的人工处理报告，`eb_reconciliation_job` 记录对账任务批次，`eb_reconciliation_result` 记录差异结果和修复状态。  
 `eb_retry_task` stores objects waiting to be retried and their current retry state, `eb_retry_report` stores reports delivered for manual handling, `eb_reconciliation_job` tracks reconciliation batches, and `eb_reconciliation_result` stores discrepancies and repair status.
 
-## 4. 跨服务对象关系 / Cross-Service Object Relationships
+## 4. 跨服务对象关系
+*Cross-Service Object Relationships*
 
 用户与账户之间是“用户拥有多个账户”的业务关系，但在数据库层面建议通过用户标识在 `eb_account` 中冗余保存，而不是跨库建立真实外键。  
 Between users and accounts, the business relationship is “one user owns multiple accounts,” but at the database level this should be represented by storing the user identifier redundantly in `eb_account` rather than using a real cross-database foreign key.
@@ -132,7 +137,8 @@ Transfer orders relate to risk decisions through the request identifier or anoth
 转账订单与通知消息、审计日志、重试任务和对账结果之间，通常通过业务单号或请求标识进行松耦合关联。  
 Transfer orders usually relate to notification messages, audit logs, retry tasks, and reconciliation results through a loosely coupled business order number or request identifier.
 
-## 5. 当前阶段的数据库设计结论 / Current Database Design Conclusion
+## 5. 当前阶段的数据库设计结论
+*Current Database Design Conclusion*
 
 当前阶段可以先按“一个服务一组核心表”的方式推进，不需要一开始就把所有辅助表做全。重点是先把主对象、状态对象和关键日志对象设计清楚。  
 At the current stage, it is enough to move forward with “one service, one minimal set of core tables.” There is no need to build every supporting table upfront. The main priority is to clearly define the primary domain objects, stateful workflow objects, and key log objects.

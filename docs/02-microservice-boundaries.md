@@ -1,6 +1,8 @@
-# 微服务拆分文档 / Microservice Boundary Design
+# 微服务拆分文档
+*Microservice Boundary Design*
 
-## 1. 文档目标 / Document Goal
+## 1. 文档目标
+*Document Goal*
 
 这份文档用于根据当前已经确认的功能范围，对整个 `easy-bank` 项目进行微服务拆分，明确每个服务的职责边界、数据归属、主要调用关系，以及哪些能力应作为基础设施处理而不是强行实现为业务微服务。  
 This document defines the microservice split for the `easy-bank` project based on the currently confirmed functional scope. It clarifies the responsibility boundaries, data ownership, and key interaction patterns of each service, and it also distinguishes between capabilities that should be handled as infrastructure and those that should be implemented as business microservices.
@@ -8,7 +10,8 @@ This document defines the microservice split for the `easy-bank` project based o
 本项目统一使用 `eb` 作为 `easy-bank` 的简称，因此下面所有模块和服务都采用 `eb` 前缀命名。  
 This project uses `eb` as the standard abbreviation for `easy-bank`, so all modules and services below use the `eb` prefix.
 
-## 2. 拆分原则 / Splitting Principles
+## 2. 拆分原则
+*Splitting Principles*
 
 第一，账户余额这类核心金融数据必须有明确的唯一写入方，避免多个服务同时改余额。  
 First, core financial data such as account balances must have a single authoritative writer so that multiple services do not update balances concurrently.
@@ -22,7 +25,8 @@ Third, interactions with external platforms should be separated from transfer or
 第四，审计、风控、通知、运维任务这些能力虽然与业务紧密相关，但从系统设计角度看，更适合独立服务化，以展示横切能力的独立演进。  
 Fourth, capabilities such as auditing, risk control, notifications, and operational tasks are closely related to the business, but from a systems-design perspective they are better modeled as independent services to demonstrate how cross-cutting capabilities evolve separately.
 
-## 3. 拆分结果 / Service Split Result
+## 3. 拆分结果
+*Service Split Result*
 
 建议的项目拆分如下：  
 The recommended project split is as follows:
@@ -41,7 +45,8 @@ The recommended project split is as follows:
 其中 `eb-common` 是 Java 公共依赖模块，不是独立微服务；`eb-gateway` 是统一入口服务；其余模块为独立业务微服务。  
 Among them, `eb-common` is a shared Java dependency module rather than an independent microservice; `eb-gateway` is the unified entry service; and the remaining modules are independent business microservices.
 
-## 4. 各服务职责说明 / Service Responsibilities
+## 4. 各服务职责说明
+*Service Responsibilities*
 
 ### 4.1 eb-common
 
@@ -123,7 +128,8 @@ It is different from ordinary application logging. Its focus is compliance-orien
 之所以单独拆出这个服务，是为了把在线交易流和异步治理任务隔离开，便于演示定时任务、补偿流程和运维治理。  
 This service is separated so that online transaction flows are isolated from asynchronous governance tasks, making it easier to demonstrate scheduled jobs, compensation workflows, and operational governance.
 
-## 5. 主要调用关系 / Main Interaction Patterns
+## 5. 主要调用关系
+*Main Interaction Patterns*
 
 典型调用链建议如下：  
 The recommended interaction patterns are as follows:
@@ -152,7 +158,8 @@ The recommended interaction patterns are as follows:
 - Business-result events are published asynchronously to `eb-service-notification`
 - Retry jobs, reconciliation, and operational reports are initiated by `eb-service-ops`
 
-## 6. 不作为业务微服务实现的能力 / Capabilities Not Implemented as Business Microservices
+## 6. 不作为业务微服务实现的能力
+*Capabilities Not Implemented as Business Microservices*
 
 系统日志中心化处理虽然在功能范围内，但不建议在本项目中把它实现成一个 Spring Boot 业务微服务。更合理的做法是把它视为基础设施能力，由 ELK、EFK 或 OpenSearch 这类日志平台承载。  
 Although centralized logging is part of the project scope, it should not be implemented as a Spring Boot business microservice in this project. A more appropriate approach is to treat it as an infrastructure capability backed by a logging platform such as ELK, EFK, or OpenSearch.
@@ -160,7 +167,8 @@ Although centralized logging is part of the project scope, it should not be impl
 同样，Redis、Kafka、RocketMQ、MySQL 也属于基础设施依赖，而不是业务微服务。项目中的 Java 服务应基于这些能力进行协作，而不是试图把它们包装成新的业务项目。  
 Similarly, Redis, Kafka, RocketMQ, and MySQL are infrastructure dependencies rather than business microservices. The Java services in the project should collaborate through these capabilities instead of wrapping them as new business projects.
 
-## 7. 数据库脚本目录约定 / Database Script Directory Convention
+## 7. 数据库脚本目录约定
+*Database Script Directory Convention*
 
 每个拥有独立数据库的微服务，都必须在自身 Java 项目目录下维护 `db_scripts/` 目录，用于存放数据库建库脚本和后续变更脚本。这样做的目的是让数据库结构演进和服务代码保持同目录归属，便于版本管理和服务级交付。  
 Each microservice that owns an independent database must maintain a `db_scripts/` directory inside its own Java project. This directory is used for database creation scripts and later schema-change scripts. The purpose is to keep database evolution and service code under the same ownership boundary, making version control and service-level delivery easier.

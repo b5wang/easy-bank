@@ -1,18 +1,30 @@
 # Easy Bank
 
-一个以金融、银行场景为背景的 Java 微服务示例项目。目标不是完整还原真实银行系统，而是用尽量少的业务逻辑和尽量简化的表结构，演示主流系统设计思路在 Spring Boot + Spring Cloud 体系里的落地方式。
+一个以金融、银行场景为背景的 Java 微服务示例项目。目标不是完整还原真实银行系统，而是用尽量少的业务逻辑和尽量简化的表结构，演示主流系统设计思路在 Spring Boot + Spring Cloud 体系里的落地方式。  
+Easy Bank is a Java microservice sample project built around financial and banking scenarios. Its goal is not to fully reproduce a real banking system, but to demonstrate mainstream system design ideas in the Spring Boot + Spring Cloud ecosystem with minimal business logic and simplified schemas.
 
 ## 当前范围
-- 目前AI以大语言模型实现，任何理解都基于语言描述，任何项目变化都需要文档化是第一要务
-  - AI无状态，不同机器协同工作依赖这些文档
-- 任何文档都要求中英双语
-- 只实现最基础的接口能力
-- 当前阶段不做前端 UI
-- 以微服务方式拆分功能域
-- 优先体现主流设计思想，而不是业务复杂度
-- 数据模型保持精简，够表达设计意图即可
+*Current Scope*
+
+- 目前 AI 以大语言模型实现，任何理解都基于语言描述，任何项目变化都需要文档化是第一要务。  
+  The current AI collaboration model is based on large language models, so every project change must be documented first because all understanding depends on language descriptions.
+- AI 无状态，不同机器协同工作依赖这些文档。  
+  AI is stateless, and collaboration across different machines depends on these documents.
+- 任何文档都要求中英双语，中文在上，英文在下。  
+  Every project document must be bilingual, with Chinese above English.
+- 只实现最基础的接口能力。  
+  Only the most basic interface capabilities are in scope.
+- 当前阶段不做前端 UI。  
+  No frontend UI is included at the current stage.
+- 以微服务方式拆分功能域。  
+  Functional domains are split as microservices.
+- 优先体现主流设计思想，而不是业务复杂度。  
+  The priority is to demonstrate mainstream design ideas rather than business complexity.
+- 数据模型保持精简，够表达设计意图即可。  
+  The data model stays minimal as long as it clearly expresses the design intent.
 
 ## 命名约定
+*Naming Convention*
 
 项目中统一使用 `eb` 作为 `easy-bank` 的简称。后续在模块名、服务名、数据库对象名、代码包名辅助标识、配置前缀等需要缩写命名的地方，可以优先使用 `eb`，避免在 `easy-bank`、`easybank`、`eb` 之间混用。  
 The project uses `eb` as the standard abbreviation for `easy-bank`. Going forward, whenever abbreviated naming is needed for module names, service names, database objects, package-related identifiers, or configuration prefixes, `eb` should be preferred to avoid mixing `easy-bank`, `easybank`, and `eb`.
@@ -21,8 +33,10 @@ The project uses `eb` as the standard abbreviation for `easy-bank`. Going forwar
 Recommended naming examples include module names such as `eb-service-account`, database table prefixes such as `eb_`, and using `eb` as the project-level prefix in database fields or business identifiers when a short prefix is needed.
 
 ## 技术基线
+*Technology Baseline*
 
 ### 当前应用框架
+*Current Application Framework*
 
 - Java 25
 - Maven 3.9.x
@@ -35,63 +49,88 @@ Recommended naming examples include module names such as `eb-service-account`, d
 - Spring Boot Actuator
 
 ### 当前数据与存储规划
+*Current Data and Storage Plan*
 
 - MySQL 8.0.x（LTS）
-- 微服务独立数据库或独立 schema
-- 数据库对象统一使用 `eb_` 前缀
-- 数据库表主键统一使用雪花 ID，字段类型优先使用 `BIGINT`
-- 每个拥有独立数据库的微服务，都在自身项目目录下维护 `db_scripts/` 目录，用于存放建库和更新脚本
+- 微服务独立数据库或独立 schema。  
+  Each microservice uses its own database or at least its own schema.
+- 数据库对象统一使用 `eb_` 前缀。  
+  Database objects consistently use the `eb_` prefix.
+- 数据库表主键统一使用雪花 ID，字段类型优先使用 `BIGINT`。  
+  Database table primary keys consistently use Snowflake IDs, and `BIGINT` is preferred for column types.
+- 每个拥有独立数据库的微服务，都在自身项目目录下维护 `db_scripts/` 目录，用于存放建库和更新脚本。  
+  Each microservice that owns an independent database maintains a `db_scripts/` directory inside its project for schema creation and update scripts.
 
 ### 当前异步与分布式基础设施规划
+*Current Asynchronous and Distributed Infrastructure Plan*
 
 - Redis
 - Kafka
 - RocketMQ
 
 ### 当前日志与可观测性规划
+*Current Logging and Observability Plan*
 
-- ELK / EFK / OpenSearch 体系，用于日志中心化处理
-- 统一链路标识与请求标识透传
+- ELK / EFK / OpenSearch 体系，用于日志中心化处理。  
+  ELK / EFK / OpenSearch stacks are planned for centralized logging.
+- 统一链路标识与请求标识透传。  
+  Trace IDs and request IDs should be propagated consistently.
 
 ### 说明
+*Notes*
 
-- 当前仓库已经建立 Maven 多模块和各微服务 Spring Boot 项目骨架
-- Redis、Kafka、RocketMQ、日志中心等基础设施当前属于规划范围，后续按阶段接入
+- 当前仓库已经建立 Maven 多模块和各微服务 Spring Boot 项目骨架。  
+  The repository already contains the Maven multi-module structure and Spring Boot skeletons for each microservice.
+- Redis、Kafka、RocketMQ、日志中心等基础设施当前属于规划范围，后续按阶段接入。  
+  Redis, Kafka, RocketMQ, and the centralized logging platform are still in the planning scope and will be introduced by phase.
 
 ## 当前文档
+*Current Documents*
 
-- [docs/00-codex-collaboration.md](/Users/neow/Documents/Sourcecode/b5wang/easy-bank/docs/00-codex-collaboration.md)
-- [docs/01-functional-scope.md](/Users/neow/Documents/Sourcecode/b5wang/easy-bank/docs/01-functional-scope.md)
-- [docs/02-microservice-boundaries.md](/Users/neow/Documents/Sourcecode/b5wang/easy-bank/docs/02-microservice-boundaries.md)
-- [docs/03-data-model-overview.md](/Users/neow/Documents/Sourcecode/b5wang/easy-bank/docs/03-data-model-overview.md)
+- [docs/00-codex-collaboration.md](docs/00-codex-collaboration.md)
+- [docs/01-functional-scope.md](docs/01-functional-scope.md)
+- [docs/02-microservice-boundaries.md](docs/02-microservice-boundaries.md)
+- [docs/03-data-model-overview.md](docs/03-data-model-overview.md)
 
 ## 当前项目结构
+*Current Project Structure*
 
-- `eb-common`
-  - Java 公共依赖模块，承载统一响应对象、链路标识常量等公共组件
-- `eb-gateway`
-  - API 网关，负责统一入口和基础路由
-- `eb-service-auth`
-  - 登录验证、令牌签发、角色权限基础能力
-- `eb-service-account`
-  - 账户主数据、账户状态、余额写入和余额流水
-- `eb-service-transfer`
-  - 转账订单和转账流程编排
-- `eb-service-channel`
-  - 外部银行、商户平台、购物平台等渠道接入与回调处理
-- `eb-service-risk`
-  - 轻量风控规则与风险决策
-- `eb-service-notification`
-  - 站内通知和后续可扩展的短信、邮件、推送
-- `eb-service-audit`
-  - 审计日志留痕
-- `eb-service-ops`
-  - 重试任务、人工处理报告、对账任务等运维型流程
+- `eb-common`  
+  Java 公共依赖模块，承载统一响应对象、链路标识常量等公共组件。  
+  Shared Java dependency module that carries common components such as unified response objects and trace-identifier constants.
+- `eb-gateway`  
+  API 网关，负责统一入口和基础路由。  
+  API gateway responsible for the unified entry point and basic routing.
+- `eb-service-auth`  
+  登录验证、令牌签发、角色权限基础能力。  
+  Login verification, token issuance, and basic role-permission capabilities.
+- `eb-service-account`  
+  账户主数据、账户状态、余额写入和余额流水。  
+  Account master data, account state, balance writes, and balance-change history.
+- `eb-service-transfer`  
+  转账订单和转账流程编排。  
+  Transfer orders and transfer workflow orchestration.
+- `eb-service-channel`  
+  外部银行、商户平台、购物平台等渠道接入与回调处理。  
+  Integration with external banks, merchant platforms, shopping platforms, and callback handling.
+- `eb-service-risk`  
+  轻量风控规则与风险决策。  
+  Lightweight risk-control rules and risk decisions.
+- `eb-service-notification`  
+  站内通知和后续可扩展的短信、邮件、推送。  
+  In-app notifications and future extensions for SMS, email, and push messaging.
+- `eb-service-audit`  
+  审计日志留痕。  
+  Audit logging and trace retention.
+- `eb-service-ops`  
+  重试任务、人工处理报告、对账任务等运维型流程。  
+  Operations-oriented workflows such as retry tasks, manual-handling reports, and reconciliation jobs.
 
 除了 `eb-gateway` 和 `eb-common`，其余拥有独立数据库的微服务都已经预留 `db_scripts/` 目录，用于放置数据库建库脚本和后续更新脚本。  
 Except for `eb-gateway` and `eb-common`, each microservice that owns an independent database now has a reserved `db_scripts/` directory for database creation scripts and future update scripts.
 
 ## 当前阶段结论
+*Current Stage Conclusion*
 
 当前仓库已经完成微服务拆分文档、数据结构设计概览，以及对应的 Maven 多模块 Java 项目骨架。  
 The repository now includes the microservice boundary documentation, the data-model overview, and the corresponding Maven multi-module Java project skeleton.
