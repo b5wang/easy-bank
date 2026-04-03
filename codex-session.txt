@@ -7,4 +7,10 @@ npm install -g @openai/codex
 exit
 ---
 How to make 2 pc which you are using to do development have the same session?
-
+Codex CLI 的 session 默认是“本地状态”，不是云同步的。
+所以换机器后：session ID 没有任何意义
+方案一（最推荐）：用 Git + Prompt 复现上下文
+方案二：复制本地 session 文件（进阶玩法）
+    问题：目录不一致
+方案三：把 Codex 当“无状态 AI”用（推荐思维）
+按照方案三的思维，使用方案一的方式。文档化就变得十分的重要。我让codex按顺序读取文档。
