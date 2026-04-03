@@ -19,8 +19,8 @@ Each microservice should have its own database, or at least its own logical sche
 账户余额只属于账户服务，转账订单只属于转账服务，渠道交互记录只属于渠道服务，风险决策只属于风控服务。这个边界应在数据库设计层面就保持清楚。  
 Account balances belong only to the account service, transfer orders belong only to the transfer service, channel interaction records belong only to the channel service, and risk decisions belong only to the risk service. These boundaries should already be clear at the database-design level.
 
-数据库表主键统一使用雪花 ID。实现上建议由应用侧统一生成 64 位整数主键，数据库字段类型优先使用 `BIGINT`，避免在各服务内部混用自增主键和 UUID。  
-All database tables should use Snowflake IDs as their primary-key strategy. In practice, the application layer should generate unified 64-bit integer IDs, and database columns should use `BIGINT` wherever possible, avoiding a mix of auto-increment keys and UUIDs across services.
+数据库表主键统一使用雪花风格的 64 位 ID。实现上建议由应用侧统一生成，并在公共模块内集中约束 `serviceId`、`nodeId` 和序列规则；数据库字段类型优先使用 `BIGINT`，避免在各服务内部混用自增主键和 UUID。  
+All database tables should use Snowflake-style 64-bit IDs as their primary-key strategy. In practice, generation should happen at the application layer, with `serviceId`, `nodeId`, and sequence rules centrally constrained in the shared module. Database columns should use `BIGINT` wherever possible, avoiding a mix of auto-increment keys and UUIDs across services.
 
 ## 3. 各服务核心数据对象
 *Core Data Objects by Service*
@@ -146,8 +146,8 @@ At the current stage, it is enough to move forward with “one service, one mini
 所有主表、流水表、任务表和日志表的主键策略统一采用雪花 ID。后续如果有外部业务单号、请求号或渠道流水号，也应和主键分开设计，不要直接拿外部编号替代内部主键。  
 The primary-key strategy for all main tables, history tables, task tables, and log tables should consistently use Snowflake IDs. If there are external business order numbers, request IDs, or channel-side transaction IDs later on, they should be designed separately from the primary key rather than replacing the internal ID.
 
-每个拥有数据库的微服务，应在自身项目目录下维护 `db_scripts/` 目录。建库脚本、初始化脚本和后续更新脚本都应放在对应服务的 `db_scripts/` 下，而不是集中堆在仓库根目录。  
-Each service that owns a database should maintain a `db_scripts/` directory inside its own project. Database creation scripts, initialization scripts, and later update scripts should all be stored under that service’s `db_scripts/` directory rather than collected in a single root-level location.
+每个拥有数据库的微服务，应在自身项目目录下维护 `db_scripts/` 目录。建库脚本、初始化脚本和后续按 `Flyway` 管理的版本化迁移脚本，都应放在对应服务的 `db_scripts/` 下，而不是集中堆在仓库根目录。  
+Each service that owns a database should maintain a `db_scripts/` directory inside its own project. Database creation scripts, initialization scripts, and later versioned migration scripts managed by `Flyway` should all be stored under that service’s `db_scripts/` directory rather than collected in a single root-level location.
 
 在进入具体编码前，如果某个服务的数据库结构仍不够清楚，应优先继续补这份文档或新增更细化的数据结构文档，而不是跳过数据设计直接实现接口。  
 Before implementation begins, if the database structure of any service is still unclear, the priority should be to keep refining this document or add a more detailed data-structure document rather than skipping the data-design step and going straight to API implementation.

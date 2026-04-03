@@ -23,9 +23,10 @@ At the beginning of every new Codex session, the following files must be read in
 4. [01-functional-scope.md](01-functional-scope.md)
 5. [02-microservice-boundaries.md](02-microservice-boundaries.md)
 6. [03-data-model-overview.md](03-data-model-overview.md)
+7. [04-technology-selection.md](04-technology-selection.md)
 
-这样安排的原因是：`README.md` 提供项目总览，当前文档定义协作规则，`01-functional-scope.md` 提供已确认的功能边界，`02-microservice-boundaries.md` 提供服务拆分边界，`03-data-model-overview.md` 提供编码前必须先确认的数据结构关系，而 `codex-session.txt` 用于保留与会话衔接有关的辅助信息。  
-The reason for this order is straightforward: `README.md` provides the project overview, this document defines the collaboration rules, `01-functional-scope.md` defines the confirmed functional scope, `02-microservice-boundaries.md` defines service boundaries, `03-data-model-overview.md` defines the data-structure relationships that must be confirmed before coding, and `codex-session.txt` preserves lightweight information related to session continuity.
+这样安排的原因是：`README.md` 提供项目总览，当前文档定义协作规则，`01-functional-scope.md` 提供已确认的功能边界，`02-microservice-boundaries.md` 提供服务拆分边界，`03-data-model-overview.md` 提供编码前必须先确认的数据结构关系，`04-technology-selection.md` 提供当前阶段确认的技术基线与版本选择，而 `codex-session.txt` 用于保留与会话衔接有关的辅助信息。  
+The reason for this order is straightforward: `README.md` provides the project overview, this document defines the collaboration rules, `01-functional-scope.md` defines the confirmed functional scope, `02-microservice-boundaries.md` defines service boundaries, `03-data-model-overview.md` defines the data-structure relationships that must be confirmed before coding, `04-technology-selection.md` captures the confirmed technical baseline and version choices for the current stage, and `codex-session.txt` preserves lightweight information related to session continuity.
 
 如果未来新增了更高优先级的文档，例如需求细化文档、微服务边界文档或接口约定文档，应在本节中补充进去，并明确阅读顺序。  
 If higher-priority documents are added later, such as a detailed requirements document, a microservice boundary document, or an API contract document, they should be added to this section with an explicit read order.

@@ -100,20 +100,20 @@ For operations such as credit, debit, and transfer submission, idempotency shoul
 这一能力对高并发和高可靠接口至关重要，也是最适合通过示例项目讲清楚“重复请求不等于重复处理”的主题。  
 This capability is essential for high-concurrency, high-reliability APIs, and it is one of the clearest ways to teach the principle that duplicate requests must not lead to duplicate processing.
 
-#### 3.2.2 转账功能使用分布式事务
-*Distributed Transactions for Transfer Workflows*
+#### 3.2.2 转账功能使用跨服务一致性模式
+*Cross-Service Consistency Patterns for Transfer Workflows*
 
-对于只发生在单一账户服务内部的站内记账，优先使用本地事务即可；但对于跨服务、跨库、跨渠道的转账流程，项目中至少应设计一个“使用分布式事务模式”的示例场景。这里的重点不是强行把所有流程都做成分布式事务，而是要明确什么时候需要它、什么时候不需要它。  
-For internal booking flows that stay entirely within a single account service, local transactions should remain the default choice. But for transfer workflows that span multiple services, databases, or external channels, the project should include at least one scenario that uses a distributed transaction pattern. The point is not to force every flow into a distributed transaction, but to make clear when one is needed and when it is not.
+对于只发生在单一账户服务内部的站内记账，优先使用本地事务即可；但对于跨服务、跨库、跨渠道的转账流程，项目中至少应设计一个“跨服务一致性”示例场景。这里的重点不是强行把所有流程都做成全局事务，而是要明确什么时候需要应用层编排、什么时候只需要本地事务。  
+For internal booking flows that stay entirely within a single account service, local transactions should remain the default choice. But for transfer workflows that span multiple services, databases, or external channels, the project should include at least one cross-service consistency scenario. The point is not to force every flow into a global transaction, but to make clear when application-layer orchestration is needed and when local transactions are enough.
 
-这一能力建议结合主流方案来演示，例如 Saga、TCC 或基于事务消息的最终一致性模式。学习重点包括事务边界识别、状态回滚或补偿、超时处理、异常恢复，以及“业务一致性”和“技术一致性”之间的取舍。  
-This capability should be demonstrated using mainstream approaches such as Saga, TCC, or an eventual-consistency pattern built on transactional messaging. The learning focus should include identifying transaction boundaries, rollback or compensation, timeout handling, failure recovery, and the tradeoff between business consistency and technical consistency.
+结合当前技术选型，这一能力当前正式基线优先采用 `Saga + 本地事务 + Kafka 事件 + 幂等与补偿` 来演示。`TCC` 或基于事务消息的最终一致性模式可以作为对比思路了解，但不作为当前项目的正式基线。学习重点包括事务边界识别、状态回滚或补偿、超时处理、异常恢复，以及“业务一致性”和“技术一致性”之间的取舍。  
+Given the current technology selection, the formal baseline for this capability is to demonstrate `Saga + local transactions + Kafka events + idempotency and compensation`. `TCC` or transactional-messaging-based eventual consistency can still be studied as comparison patterns, but they are not the project’s formal baseline right now. The learning focus should include identifying transaction boundaries, rollback or compensation, timeout handling, failure recovery, and the tradeoff between business consistency and technical consistency.
 
 #### 3.2.3 转账失败重试与人工处理报告
 *Retry and Operational Reporting for Failed Transfers*
 
-转账流程失败后，系统不能只把状态停留在失败。建议加入定时任务，对可重试的失败状态进行自动重试，并对多次重试仍失败的记录生成报告，交给业务人员或运营人员处理。  
-When a transfer workflow fails, the system should not simply leave it in a failed state forever. A scheduled job should retry failures that are safe to retry, and for records that still fail after multiple attempts, it should generate a report for business or operations staff to handle manually.
+转账流程失败后，系统不能只把状态停留在失败。建议加入基于 `Quartz` 的定时任务，对可重试的失败状态进行自动重试，并对多次重试仍失败的记录生成报告，交给业务人员或运营人员处理。  
+When a transfer workflow fails, the system should not simply leave it in a failed state forever. A `Quartz`-based scheduled job should retry failures that are safe to retry, and for records that still fail after multiple attempts, it should generate a report for business or operations staff to handle manually.
 
 这一能力非常适合演示失败分级、重试策略、死信思路、补偿任务、人工兜底流程，以及“系统自动化边界在哪里”这一现实问题。它也能很好地承接外部平台转账中的超时、渠道异常和状态不一致场景。  
 This capability is a strong way to demonstrate failure classification, retry strategy, dead-letter thinking, compensation jobs, manual fallback processes, and the very practical question of where the boundary of automation should be. It also fits naturally with external-platform transfer scenarios involving timeouts, channel errors, and inconsistent states.
@@ -151,8 +151,8 @@ Its value lies in demonstrating the pattern of making a decision before executin
 系统日志中心化处理建议作为横切能力纳入，而不是留到运维阶段再补。目标是让开发人员能够在统一入口查询网关日志、应用日志、异常日志和链路相关日志，而不是登录每台实例逐个排查。  
 Centralized logging should be included as a cross-cutting capability rather than postponed until an operations phase. The goal is to let developers query gateway logs, application logs, exception logs, and trace-related logs from a single entry point instead of logging into individual instances one by one.
 
-这一能力适合结合主流方案来演示，例如 ELK、EFK 或 OpenSearch 体系。学习重点包括统一日志格式、请求链路标识、日志采集、索引检索、错误聚合，以及如何让故障排查和 AI 辅助诊断建立在统一日志基础之上。  
-This capability is well suited to demonstration through mainstream solutions such as ELK, EFK, or an OpenSearch-based stack. The learning focus should include standardized log formats, request correlation IDs, log collection, indexed search, error aggregation, and how both troubleshooting and AI-assisted diagnosis can be built on top of a unified log foundation.
+结合当前技术选型，这一能力当前正式基线采用 `OpenSearch + OpenSearch Dashboards + Fluent Bit`。同时，基础指标与链路追踪分别由 `Micrometer + Prometheus` 和 `OpenTelemetry + Jaeger` 承接。学习重点包括统一日志格式、请求链路标识、日志采集、索引检索、错误聚合，以及如何让故障排查和 AI 辅助诊断建立在统一日志基础之上。  
+Given the current technology selection, the formal baseline for this capability is `OpenSearch + OpenSearch Dashboards + Fluent Bit`. Baseline metrics and distributed tracing are handled separately by `Micrometer + Prometheus` and `OpenTelemetry + Jaeger`. The learning focus should include standardized log formats, request correlation IDs, log collection, indexed search, error aggregation, and how both troubleshooting and AI-assisted diagnosis can be built on top of a unified log foundation.
 
 ### 3.3 扩展业务功能
 *Extended Business Functions*
@@ -178,8 +178,8 @@ Credit and lending are strong financial use cases, but they are too heavy for th
 ## 4. AI 相关功能建议
 *AI-Related Functional Suggestions*
 
-随着用户登录验证、通知、分布式事务、失败重试报告和日志中心化这些功能被纳入范围，AI 的定位也需要重新明确。这里的 AI 不应该是一个孤立的聊天能力，而应该围绕“风险决策、测试生成、故障诊断、人工处理辅助”这几类高价值场景落地。  
-Now that user login and verification, notifications, distributed transactions, failed-transfer retry reports, and centralized logging are all in scope, the role of AI needs to be reframed as well. AI should not exist here as a standalone chat feature. It should be applied to high-value scenarios such as risk decision support, test generation, incident diagnosis, and manual-operations assistance.
+随着用户登录验证、通知、跨服务一致性编排、失败重试报告和日志中心化这些功能被纳入范围，AI 的定位也需要重新明确。这里的 AI 不应该是一个孤立的聊天能力，而应该围绕“风险决策、测试生成、故障诊断、人工处理辅助”这几类高价值场景落地。  
+Now that user login and verification, notifications, cross-service consistency orchestration, failed-transfer retry reports, and centralized logging are all in scope, the role of AI needs to be reframed as well. AI should not exist here as a standalone chat feature. It should be applied to high-value scenarios such as risk decision support, test generation, incident diagnosis, and manual-operations assistance.
 
 ### 4.1 AI 风控辅助与解释
 *AI-Assisted Risk Review and Explanation*
@@ -193,8 +193,8 @@ The learning value of this capability is that it separates rule-based decision m
 ### 4.2 AI 测试生成与异常场景补全
 *AI Test Generation and Failure-Scenario Expansion*
 
-在当前功能范围下，AI 生成测试的价值比过去更高，因为测试点已经明显增加了。除了常规接口测试，AI 还可以重点生成登录失败、权限不足、重复请求、外部渠道超时、重复回调、分布式事务补偿、失败重试任务、通知投递失败等场景的测试样例。  
-Given the current scope, AI-driven test generation is even more valuable than before because the number of important scenarios has grown significantly. Beyond standard API tests, AI can now generate targeted cases for failed login, insufficient permissions, duplicate requests, external-channel timeouts, duplicate callbacks, distributed-transaction compensation, failed-transfer retry jobs, and notification delivery failures.
+在当前功能范围下，AI 生成测试的价值比过去更高，因为测试点已经明显增加了。除了常规接口测试，AI 还可以重点生成登录失败、权限不足、重复请求、外部渠道超时、重复回调、`Saga` 补偿、失败重试任务、通知投递失败等场景的测试样例。  
+Given the current scope, AI-driven test generation is even more valuable than before because the number of important scenarios has grown significantly. Beyond standard API tests, AI can now generate targeted cases for failed login, insufficient permissions, duplicate requests, external-channel timeouts, duplicate callbacks, `Saga` compensation, failed-transfer retry jobs, and notification delivery failures.
 
 这一能力特别适合放在接口文档和需求文档已经比较稳定之后使用。它的目标不是替代人工思考测试设计，而是帮助你快速覆盖大量边界条件和回归路径，尤其适合这种以系统设计演示为主的项目。  
 This capability works best once the API contracts and requirements documents have stabilized. Its purpose is not to replace human thinking in test design, but to help you rapidly cover a large number of edge cases and regression paths, which is especially useful in a project that is meant to demonstrate system design ideas.
@@ -220,8 +220,8 @@ The significance of this capability is that AI is not only improving engineering
 ## 5. 推荐的功能优先级
 *Recommended Functional Priority*
 
-基于现在的功能范围，项目的阶段划分应该更强调“先打通核心闭环，再接入外部世界，最后做治理和 AI 增强”。如果一开始就把外部平台转账、分布式事务、集中日志和 AI 同时拉进来，项目会迅速失去学习节奏。  
-Given the current scope, the project should be staged around a simple principle: first build the core closed-loop flow, then connect to the outside world, and only after that add governance and AI enhancement. If external-platform transfers, distributed transactions, centralized logging, and AI are all introduced at once, the project will lose its learning rhythm very quickly.
+基于现在的功能范围，项目的阶段划分应该更强调“先打通核心闭环，再接入外部世界，最后做治理和 AI 增强”。如果一开始就把外部平台转账、跨服务一致性编排、集中日志和 AI 同时拉进来，项目会迅速失去学习节奏。  
+Given the current scope, the project should be staged around a simple principle: first build the core closed-loop flow, then connect to the outside world, and only after that add governance and AI enhancement. If external-platform transfers, cross-service consistency orchestration, centralized logging, and AI are all introduced at once, the project will lose its learning rhythm very quickly.
 
 第一阶段建议完成用户登录验证、账户管理、行内转账、交易流水、幂等控制和统一异常处理。这个阶段的目标不是“做完整银行系统”，而是先把系统入口、账户写模型、基础交易流和高并发下最关键的正确性问题跑通。  
 Phase one should cover user login and verification, account management, internal transfers, transaction history, idempotency control, and unified exception handling. The goal at this stage is not to build a complete banking system, but to get the system entry flow, the account write model, the foundational transaction flow, and the most important correctness concerns under concurrency working first.
@@ -229,8 +229,8 @@ Phase one should cover user login and verification, account management, internal
 第二阶段建议加入统一认证鉴权、审计日志、轻量风控、通知，以及外部平台转账的最小闭环。这个阶段的目标是让系统开始面对真实金融系统常见的约束条件，也就是身份控制、行为留痕、风险决策、用户触达，以及外部渠道依赖。  
 Phase two should add unified authentication and authorization, audit logging, lightweight risk control, notifications, and the smallest complete external-platform transfer flow. The goal here is to make the system face the kinds of constraints real financial systems commonly deal with: identity control, traceability, risk decision making, user-facing communication, and dependency on external channels.
 
-第三阶段建议加入 Redis、消息队列、分布式事务示例、失败重试任务与人工处理报告、对账，以及系统日志中心化处理。这个阶段不再只是补功能，而是开始系统化展示高可用、高并发和运维治理能力。  
-Phase three should add Redis, a message queue, a distributed-transaction example, failed-transfer retry jobs with manual-handling reports, reconciliation, and centralized logging. At this stage, the focus is no longer just adding features. It becomes a structured demonstration of high availability, high concurrency, and operational governance.
+第三阶段建议加入 Redis、`Kafka`、基于 `Saga` 的跨服务一致性示例、基于 `Quartz` 的失败重试任务与人工处理报告、对账，以及系统日志中心化处理和基础指标 / 链路追踪能力。这个阶段不再只是补功能，而是开始系统化展示高可用、高并发和运维治理能力。  
+Phase three should add Redis, `Kafka`, a `Saga`-based cross-service consistency example, `Quartz`-based failed-transfer retry jobs with manual-handling reports, reconciliation, centralized logging, and baseline metrics / tracing capabilities. At this stage, the focus is no longer just adding features. It becomes a structured demonstration of high availability, high concurrency, and operational governance.
 
 第四阶段再逐步引入 AI 风控辅助、AI 测试生成、AI 故障排查和 AI 人工处理辅助。这样做的好处是，AI 建立在已经存在的风控规则、测试文档、日志中心和人工处理流程之上，既更自然，也更容易验证效果。  
 Only in phase four should you gradually introduce AI-assisted risk review, AI-generated tests, AI-supported incident diagnosis, and AI support for manual operations. The advantage of this sequence is that AI is built on top of already existing risk rules, test documentation, centralized logs, and manual-handling workflows, which makes it both more natural and easier to validate.
@@ -241,8 +241,8 @@ Only in phase four should you gradually introduce AI-assisted risk review, AI-ge
 基于当前项目目标，建议正式纳入的核心业务功能包括：用户登录验证、账户管理、账户状态控制、行内转账、外部平台转账、交易流水与账务记录、转账状态查询，以及通知。  
 Given the current goals of the project, the recommended core business functions are user login and verification, account management, account status control, internal transfers, external-platform transfers, transaction history and ledger records, transfer status lookup, and notifications.
 
-建议正式纳入的横切业务能力包括：幂等控制、分布式事务示例、失败重试与人工处理报告、统一异常处理、认证鉴权、审计日志、轻量风控、系统日志中心化处理，以及后续为高并发和异步解耦准备的 Redis、消息队列和对账机制。  
-The recommended cross-cutting business capabilities are idempotency control, a distributed-transaction example, failed-transfer retries with manual-handling reports, unified exception handling, authentication and authorization, audit logging, lightweight risk control, centralized logging, and later-stage Redis, messaging, and reconciliation mechanisms for high concurrency and asynchronous decoupling.
+建议正式纳入的横切业务能力包括：幂等控制、基于 `Saga` 的跨服务一致性示例、失败重试与人工处理报告、统一异常处理、认证鉴权、审计日志、轻量风控、系统日志中心化处理，以及后续为高并发和异步解耦准备的 `Redis`、`Kafka`、对账机制和基础可观测性能力。  
+The recommended cross-cutting business capabilities are idempotency control, a `Saga`-based cross-service consistency example, failed-transfer retries with manual-handling reports, unified exception handling, authentication and authorization, audit logging, lightweight risk control, centralized logging, and later-stage `Redis`, `Kafka`, reconciliation mechanisms, and baseline observability capabilities for high concurrency and asynchronous decoupling.
 
 建议正式纳入的 AI 相关能力包括：AI 风控辅助与解释、AI 测试生成与异常场景补全、AI 故障排查与日志分析，以及 AI 人工处理辅助。这样 AI 的作用能够同时覆盖业务决策、工程质量、运维诊断和运营支持。  
 The recommended AI-related capabilities are AI-assisted risk review and explanation, AI test generation and failure-scenario expansion, AI incident diagnosis and log analysis, and AI support for manual operations. This lets AI contribute across business decision support, engineering quality, operational diagnosis, and support workflows.

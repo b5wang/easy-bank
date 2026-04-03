@@ -14,6 +14,8 @@ Easy Bank is a Java microservice sample project built around financial and banki
   Every project document must be bilingual, with Chinese above English.
 - 只实现最基础的接口能力。  
   Only the most basic interface capabilities are in scope.
+- 对外接口和面向 UI 的接口统一使用标准 REST API。  
+  External-facing APIs and UI-facing APIs should consistently use standard REST APIs.
 - 当前阶段不做前端 UI。  
   No frontend UI is included at the current stage.
 - 以微服务方式拆分功能域。  
@@ -44,14 +46,16 @@ Recommended naming examples include module names such as `eb-service-account`, d
 - Spring Cloud 2025.1.1
 - Spring Cloud Gateway
 - Spring Cloud OpenFeign
+- Spring Cloud CircuitBreaker
 - Spring Security
 - Spring Data JPA
+- Quartz Scheduler
 - Spring Boot Actuator
 
 ### 当前数据与存储规划
 *Current Data and Storage Plan*
 
-- MySQL 8.0.x（LTS）
+- MySQL 8.4.x（LTS，当前基线 8.4.8）
 - 微服务独立数据库或独立 schema。  
   Each microservice uses its own database or at least its own schema.
 - 数据库对象统一使用 `eb_` 前缀。  
@@ -60,29 +64,54 @@ Recommended naming examples include module names such as `eb-service-account`, d
   Database table primary keys consistently use Snowflake IDs, and `BIGINT` is preferred for column types.
 - 每个拥有独立数据库的微服务，都在自身项目目录下维护 `db_scripts/` 目录，用于存放建库和更新脚本。  
   Each microservice that owns an independent database maintains a `db_scripts/` directory inside its project for schema creation and update scripts.
+- 数据库结构变更默认采用 Flyway 管理，迁移脚本统一沉淀在各服务自己的 `db_scripts/` 目录。  
+  Database schema changes should be managed by Flyway by default, with migration scripts kept in each service’s own `db_scripts/` directory.
 
 ### 当前异步与分布式基础设施规划
 *Current Asynchronous and Distributed Infrastructure Plan*
 
 - Redis
 - Kafka
-- RocketMQ
 
 ### 当前日志与可观测性规划
 *Current Logging and Observability Plan*
 
-- ELK / EFK / OpenSearch 体系，用于日志中心化处理。  
-  ELK / EFK / OpenSearch stacks are planned for centralized logging.
+- OpenSearch + OpenSearch Dashboards + Fluent Bit 体系，用于日志中心化处理。  
+  An OpenSearch + OpenSearch Dashboards + Fluent Bit stack is planned for centralized logging.
+- Micrometer + Prometheus，用于统一基础指标采集与暴露。  
+  Micrometer + Prometheus are planned for baseline metrics collection and exposure.
+- OpenTelemetry + OTLP + Jaeger，用于链路追踪。  
+  OpenTelemetry + OTLP + Jaeger are planned for distributed tracing.
 - 统一链路标识与请求标识透传。  
   Trace IDs and request IDs should be propagated consistently.
+
+### 当前配置中心与服务治理规划
+*Current Configuration and Service Governance Plan*
+
+- Nacos，统一承载配置中心与服务注册发现。  
+  Nacos is planned as the unified platform for both configuration management and service discovery.
+- 网关入口限流采用 Spring Cloud Gateway RequestRateLimiter + Redis。  
+  Gateway entry rate limiting uses Spring Cloud Gateway RequestRateLimiter + Redis.
+- 内部同步调用故障隔离采用 Spring Cloud CircuitBreaker + Resilience4j。  
+  Internal synchronous-call fault isolation uses Spring Cloud CircuitBreaker + Resilience4j.
+
+### 当前调度、密钥与事务路线规划
+*Current Scheduling, Secret, and Transaction Plan*
+
+- 运维型重试、补偿与对账任务优先由 `eb-service-ops` 基于 Quartz 承载。  
+  Operations-style retry, compensation, and reconciliation jobs are primarily carried by `eb-service-ops` with Quartz.
+- 高敏感凭据统一采用 Vault 管理，普通配置继续由 Nacos 管理。  
+  Highly sensitive secrets are managed through Vault, while ordinary configuration continues to be managed in Nacos.
+- 跨服务一致性当前正式路线采用 Saga + 本地事务 + Kafka 事件 + 幂等与补偿。  
+  The formal current route for cross-service consistency is Saga + local transactions + Kafka events + idempotency and compensation.
 
 ### 说明
 *Notes*
 
 - 当前仓库已经建立 Maven 多模块和各微服务 Spring Boot 项目骨架。  
   The repository already contains the Maven multi-module structure and Spring Boot skeletons for each microservice.
-- Redis、Kafka、RocketMQ、日志中心等基础设施当前属于规划范围，后续按阶段接入。  
-  Redis, Kafka, RocketMQ, and the centralized logging platform are still in the planning scope and will be introduced by phase.
+- Redis、Kafka、OpenSearch 日志平台、Nacos、Prometheus、Jaeger、Vault 等基础设施当前已完成选型，但仍将按阶段逐步接入。  
+  Redis, Kafka, the OpenSearch logging stack, Nacos, Prometheus, Jaeger, Vault, and related infrastructure have now been selected, but they will still be introduced incrementally by phase.
 
 ## 当前文档
 *Current Documents*
@@ -91,6 +120,7 @@ Recommended naming examples include module names such as `eb-service-account`, d
 - [docs/01-functional-scope.md](docs/01-functional-scope.md)
 - [docs/02-microservice-boundaries.md](docs/02-microservice-boundaries.md)
 - [docs/03-data-model-overview.md](docs/03-data-model-overview.md)
+- [docs/04-technology-selection.md](docs/04-technology-selection.md)
 
 ## 当前项目结构
 *Current Project Structure*

@@ -161,17 +161,17 @@ The recommended interaction patterns are as follows:
 ## 6. 不作为业务微服务实现的能力
 *Capabilities Not Implemented as Business Microservices*
 
-系统日志中心化处理虽然在功能范围内，但不建议在本项目中把它实现成一个 Spring Boot 业务微服务。更合理的做法是把它视为基础设施能力，由 ELK、EFK 或 OpenSearch 这类日志平台承载。  
-Although centralized logging is part of the project scope, it should not be implemented as a Spring Boot business microservice in this project. A more appropriate approach is to treat it as an infrastructure capability backed by a logging platform such as ELK, EFK, or OpenSearch.
+系统日志中心化处理虽然在功能范围内，但不建议在本项目中把它实现成一个 Spring Boot 业务微服务。更合理的做法是把它视为基础设施能力，由 `OpenSearch + OpenSearch Dashboards + Fluent Bit` 这类已选定日志平台承载。  
+Although centralized logging is part of the project scope, it should not be implemented as a Spring Boot business microservice in this project. A more appropriate approach is to treat it as an infrastructure capability backed by the selected logging stack of `OpenSearch + OpenSearch Dashboards + Fluent Bit`.
 
-同样，Redis、Kafka、RocketMQ、MySQL 也属于基础设施依赖，而不是业务微服务。项目中的 Java 服务应基于这些能力进行协作，而不是试图把它们包装成新的业务项目。  
-Similarly, Redis, Kafka, RocketMQ, and MySQL are infrastructure dependencies rather than business microservices. The Java services in the project should collaborate through these capabilities instead of wrapping them as new business projects.
+同样，`Redis`、`Kafka`、`MySQL`、`Nacos`、`Vault`，以及 `Prometheus`、`Jaeger` 这类观测与治理基础设施，也都属于基础设施依赖，而不是业务微服务。项目中的 Java 服务应基于这些能力进行协作，而不是试图把它们包装成新的业务项目。  
+Similarly, infrastructure such as `Redis`, `Kafka`, `MySQL`, `Nacos`, `Vault`, and observability or governance platforms such as `Prometheus` and `Jaeger` are infrastructure dependencies rather than business microservices. The Java services in the project should collaborate through these capabilities instead of wrapping them as new business projects.
 
 ## 7. 数据库脚本目录约定
 *Database Script Directory Convention*
 
-每个拥有独立数据库的微服务，都必须在自身 Java 项目目录下维护 `db_scripts/` 目录，用于存放数据库建库脚本和后续变更脚本。这样做的目的是让数据库结构演进和服务代码保持同目录归属，便于版本管理和服务级交付。  
-Each microservice that owns an independent database must maintain a `db_scripts/` directory inside its own Java project. This directory is used for database creation scripts and later schema-change scripts. The purpose is to keep database evolution and service code under the same ownership boundary, making version control and service-level delivery easier.
+每个拥有独立数据库的微服务，都必须在自身 Java 项目目录下维护 `db_scripts/` 目录，用于存放数据库建库脚本和后续按 `Flyway` 约定管理的迁移脚本。这样做的目的是让数据库结构演进和服务代码保持同目录归属，便于版本管理和服务级交付。  
+Each microservice that owns an independent database must maintain a `db_scripts/` directory inside its own Java project. This directory is used for database creation scripts and later migration scripts managed under `Flyway` conventions. The purpose is to keep database evolution and service code under the same ownership boundary, making version control and service-level delivery easier.
 
 当前项目中，这一规则适用于：`eb-service-auth`、`eb-service-account`、`eb-service-transfer`、`eb-service-channel`、`eb-service-risk`、`eb-service-notification`、`eb-service-audit`、`eb-service-ops`。  
 In the current project, this rule applies to `eb-service-auth`, `eb-service-account`, `eb-service-transfer`, `eb-service-channel`, `eb-service-risk`, `eb-service-notification`, `eb-service-audit`, and `eb-service-ops`.
