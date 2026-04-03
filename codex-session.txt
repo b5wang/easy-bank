@@ -1,1 +1,10 @@
 codex resume 019cfa4c-98bc-7bf1-9449-c9fa6a7ee83d
+---
+If your codex need upgrade, run following commands:
+code upgrade:
+sudo -i
+npm install -g @openai/codex
+exit
+---
+How to make 2 pc which you are using to do development have the same session?
+
