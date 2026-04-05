@@ -1,0 +1,92 @@
+-- Flyway baseline init script for eb-service-ops
+
+CREATE TABLE eb_retry_task (
+    id BIGINT UNSIGNED NOT NULL,
+    task_no VARCHAR(32) NOT NULL,
+    task_type TINYINT UNSIGNED NOT NULL,
+    biz_no VARCHAR(32) NULL,
+    related_step_code VARCHAR(32) NULL,
+    task_status TINYINT UNSIGNED NOT NULL,
+    retry_count INT UNSIGNED NOT NULL DEFAULT 0,
+    max_retry_count INT UNSIGNED NOT NULL DEFAULT 0,
+    next_retry_at DATETIME(3) NULL,
+    last_error_code VARCHAR(32) NULL,
+    last_error_message VARCHAR(255) NULL,
+    locked_by VARCHAR(64) NULL,
+    locked_at DATETIME(3) NULL,
+    finished_at DATETIME(3) NULL,
+    created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    updated_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+    PRIMARY KEY (id),
+    UNIQUE KEY uk_eb_retry_task_no (task_no),
+    KEY idx_eb_retry_task_type_status (task_type, task_status),
+    KEY idx_eb_retry_task_biz_no (biz_no),
+    KEY idx_eb_retry_task_status_retry (task_status, next_retry_at),
+    KEY idx_eb_retry_task_locked_by (locked_by)
+) ENGINE=InnoDB;
+
+CREATE TABLE eb_retry_report (
+    id BIGINT UNSIGNED NOT NULL,
+    report_no VARCHAR(32) NOT NULL,
+    biz_no VARCHAR(32) NULL,
+    report_type TINYINT UNSIGNED NOT NULL,
+    report_status TINYINT UNSIGNED NOT NULL,
+    summary_text VARCHAR(500) NOT NULL,
+    detail_json JSON NULL,
+    assignee VARCHAR(32) NULL,
+    generated_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    closed_at DATETIME(3) NULL,
+    created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    updated_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+    PRIMARY KEY (id),
+    UNIQUE KEY uk_eb_retry_report_no (report_no),
+    KEY idx_eb_retry_report_biz_no (biz_no),
+    KEY idx_eb_retry_report_type_status (report_type, report_status),
+    KEY idx_eb_retry_report_status_generated (report_status, generated_at),
+    KEY idx_eb_retry_report_assignee_status (assignee, report_status)
+) ENGINE=InnoDB;
+
+CREATE TABLE eb_reconciliation_job (
+    id BIGINT UNSIGNED NOT NULL,
+    job_no VARCHAR(32) NOT NULL,
+    reconciliation_date DATE NOT NULL,
+    job_type TINYINT UNSIGNED NOT NULL,
+    partner_code VARCHAR(32) NULL,
+    job_status TINYINT UNSIGNED NOT NULL,
+    total_count INT UNSIGNED NOT NULL DEFAULT 0,
+    mismatch_count INT UNSIGNED NOT NULL DEFAULT 0,
+    started_at DATETIME(3) NULL,
+    finished_at DATETIME(3) NULL,
+    created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    updated_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+    PRIMARY KEY (id),
+    UNIQUE KEY uk_eb_reconciliation_job_no (job_no),
+    KEY idx_eb_reconciliation_job_scope (reconciliation_date, job_type, partner_code),
+    KEY idx_eb_reconciliation_job_status_started (job_status, started_at)
+) ENGINE=InnoDB;
+
+CREATE TABLE eb_reconciliation_result (
+    id BIGINT UNSIGNED NOT NULL,
+    result_no VARCHAR(32) NOT NULL,
+    job_no VARCHAR(32) NOT NULL,
+    biz_no VARCHAR(32) NULL,
+    partner_code VARCHAR(32) NULL,
+    mismatch_type TINYINT UNSIGNED NOT NULL,
+    internal_amount DECIMAL(19,4) NULL,
+    channel_amount DECIMAL(19,4) NULL,
+    diff_amount DECIMAL(19,4) NULL,
+    repair_status TINYINT UNSIGNED NOT NULL,
+    repair_task_no VARCHAR(32) NULL,
+    detail_json JSON NULL,
+    found_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    repaired_at DATETIME(3) NULL,
+    created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    updated_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+    PRIMARY KEY (id),
+    UNIQUE KEY uk_eb_reconciliation_result_no (result_no),
+    KEY idx_eb_reconciliation_result_job_type (job_no, mismatch_type),
+    KEY idx_eb_reconciliation_result_biz_no (biz_no),
+    KEY idx_eb_reconciliation_result_partner_status (partner_code, repair_status),
+    KEY idx_eb_reconciliation_result_repair_status_time (repair_status, found_at),
+    KEY idx_eb_reconciliation_result_repair_task_no (repair_task_no)
+) ENGINE=InnoDB;

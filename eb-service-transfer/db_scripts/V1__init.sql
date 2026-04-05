@@ -1,0 +1,72 @@
+-- Flyway baseline init script for eb-service-transfer
+
+CREATE TABLE eb_transfer_order (
+    id BIGINT UNSIGNED NOT NULL,
+    transfer_no VARCHAR(32) NOT NULL,
+    request_id VARCHAR(64) NOT NULL,
+    transfer_type TINYINT UNSIGNED NOT NULL,
+    source_account_no VARCHAR(32) NOT NULL,
+    target_account_no VARCHAR(32) NOT NULL,
+    channel_partner_code VARCHAR(32) NULL,
+    amount DECIMAL(19,4) NOT NULL,
+    currency CHAR(3) NOT NULL,
+    status TINYINT UNSIGNED NOT NULL,
+    current_step_code VARCHAR(32) NULL,
+    risk_status TINYINT UNSIGNED NOT NULL DEFAULT 0,
+    channel_status TINYINT UNSIGNED NOT NULL DEFAULT 0,
+    fail_reason_code VARCHAR(32) NULL,
+    fail_reason_message VARCHAR(255) NULL,
+    trace_id VARCHAR(64) NULL,
+    version INT UNSIGNED NOT NULL DEFAULT 0,
+    completed_at DATETIME(3) NULL,
+    created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    updated_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+    PRIMARY KEY (id),
+    UNIQUE KEY uk_eb_transfer_order_transfer_no (transfer_no),
+    UNIQUE KEY uk_eb_transfer_order_request_id (request_id),
+    KEY idx_eb_transfer_order_type_status (transfer_type, status),
+    KEY idx_eb_transfer_order_source_time (source_account_no, created_at),
+    KEY idx_eb_transfer_order_target_time (target_account_no, created_at),
+    KEY idx_eb_transfer_order_partner_status (channel_partner_code, status),
+    KEY idx_eb_transfer_order_status_updated (status, updated_at),
+    KEY idx_eb_transfer_order_trace_id (trace_id)
+) ENGINE=InnoDB;
+
+CREATE TABLE eb_transfer_step (
+    id BIGINT UNSIGNED NOT NULL,
+    transfer_no VARCHAR(32) NOT NULL,
+    step_code VARCHAR(32) NOT NULL,
+    execute_seq SMALLINT UNSIGNED NOT NULL,
+    step_status TINYINT UNSIGNED NOT NULL,
+    retry_count INT UNSIGNED NOT NULL DEFAULT 0,
+    max_retry_count INT UNSIGNED NOT NULL DEFAULT 0,
+    last_error_code VARCHAR(32) NULL,
+    last_error_message VARCHAR(255) NULL,
+    next_retry_at DATETIME(3) NULL,
+    started_at DATETIME(3) NULL,
+    finished_at DATETIME(3) NULL,
+    created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    updated_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+    PRIMARY KEY (id),
+    UNIQUE KEY uk_eb_transfer_step_transfer_step (transfer_no, step_code),
+    KEY idx_eb_transfer_step_transfer_seq (transfer_no, execute_seq),
+    KEY idx_eb_transfer_step_status_retry (step_status, next_retry_at)
+) ENGINE=InnoDB;
+
+CREATE TABLE eb_transfer_idempotency (
+    id BIGINT UNSIGNED NOT NULL,
+    request_id VARCHAR(64) NOT NULL,
+    request_hash CHAR(64) NOT NULL,
+    transfer_no VARCHAR(32) NULL,
+    process_status TINYINT UNSIGNED NOT NULL,
+    response_code VARCHAR(32) NULL,
+    response_snapshot_json JSON NULL,
+    expire_at DATETIME(3) NOT NULL,
+    created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    updated_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+    PRIMARY KEY (id),
+    UNIQUE KEY uk_eb_transfer_idempotency_request_id (request_id),
+    KEY idx_eb_transfer_idempotency_transfer_no (transfer_no),
+    KEY idx_eb_transfer_idempotency_status_expire (process_status, expire_at),
+    KEY idx_eb_transfer_idempotency_expire_at (expire_at)
+) ENGINE=InnoDB;

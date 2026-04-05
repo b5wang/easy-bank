@@ -121,6 +121,7 @@ Recommended naming examples include module names such as `eb-service-account`, d
 - [docs/02-microservice-boundaries.md](docs/02-microservice-boundaries.md)
 - [docs/03-data-model-overview.md](docs/03-data-model-overview.md)
 - [docs/04-technology-selection.md](docs/04-technology-selection.md)
+- [docs/05-mysql-environment-setup.md](docs/05-mysql-environment-setup.md)
 
 ## 当前项目结构
 *Current Project Structure*
