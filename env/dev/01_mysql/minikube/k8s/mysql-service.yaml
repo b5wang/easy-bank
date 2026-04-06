@@ -1,3 +1,4 @@
+# ClusterIP gives MySQL a stable in-cluster DNS name without exposing it directly outside Kubernetes.
 apiVersion: v1
 kind: Service
 metadata:

@@ -21,6 +21,7 @@ kubectl config current-context || true
 
 echo
 echo "Minikube status:"
+# Query the same named profile so status output matches the cluster used by the project.
 minikube status --profile="$MINIKUBE_PROFILE" || true
 
 echo

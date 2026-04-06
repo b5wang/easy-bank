@@ -1,3 +1,5 @@
+# PersistentVolumeClaim asks the cluster for durable storage.
+# MySQL data survives Pod recreation as long as this claim remains.
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:

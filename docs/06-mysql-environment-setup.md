@@ -101,6 +101,23 @@ The MySQL development-environment files are all placed under `env/dev/01_mysql/m
   MySQL Service 清单。  
   MySQL Service manifest.
 
+`env/dev/01_mysql/minikube/00-env.sh` 同样不是给开发人员单独执行的步骤脚本，而是供 `01-create-secret.sh`、`02-deploy-mysql.sh`、`03-port-forward.sh`、`04-init-databases.sh` 这些脚本内部通过 `source` 自动加载的变量文件。因此文档没有把它列成单独步骤。  
+`env/dev/01_mysql/minikube/00-env.sh` is also not a standalone step script for developers to run directly. It is a variable file automatically loaded internally via `source` by `01-create-secret.sh`, `02-deploy-mysql.sh`, `03-port-forward.sh`, and `04-init-databases.sh`. That is why the document does not list it as a separate step.
+
+如果后续需要覆盖默认变量，例如 `MYSQL_LOCAL_PORT`、`MYSQL_APP_USER` 或 `MYSQL_APP_PASSWORD_DEFAULT`，优先在执行具体脚本前通过环境变量覆盖，或者直接编辑 `00-env.sh`。  
+If you later need to override default variables such as `MYSQL_LOCAL_PORT`, `MYSQL_APP_USER`, or `MYSQL_APP_PASSWORD_DEFAULT`, prefer overriding them through environment variables before running a concrete script, or edit `00-env.sh` directly.
+
+例如：  
+For example:
+
+```bash
+export MYSQL_LOCAL_PORT=23306
+./env/dev/01_mysql/minikube/03-port-forward.sh
+```
+
+不建议把 `00-env.sh` 当成独立步骤执行，因为它本身只负责定义变量，不执行部署动作。  
+It is not recommended to treat `00-env.sh` as a standalone execution step because it only defines variables and does not perform deployment actions.
+
 ### 3.4 搭建步骤
 *Setup Steps*
 

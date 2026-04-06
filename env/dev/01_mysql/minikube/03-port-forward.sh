@@ -10,5 +10,7 @@ kubectl -n "$K8S_NAMESPACE" get svc "$MYSQL_SERVICE_NAME" >/dev/null 2>&1 || {
     exit 1
 }
 
+# `port-forward` opens a temporary tunnel from localhost to the Kubernetes Service.
+# Keep this terminal window open while your local SQL client is connected.
 echo "Forwarding 127.0.0.1:${MYSQL_LOCAL_PORT} -> ${MYSQL_SERVICE_NAME}:${MYSQL_CONTAINER_PORT}"
 kubectl -n "$K8S_NAMESPACE" port-forward "svc/${MYSQL_SERVICE_NAME}" "${MYSQL_LOCAL_PORT}:${MYSQL_CONTAINER_PORT}"

@@ -1,3 +1,4 @@
+# Namespace is the logical boundary used to group all easy-bank dev resources together.
 apiVersion: v1
 kind: Namespace
 metadata:

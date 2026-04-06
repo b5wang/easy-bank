@@ -85,22 +85,42 @@ The repository root uses the `env/` directory for environment-related scripts an
 - `env/dev/00_minikube/wsl/04-start-minikube.sh`  
   启动 `easy-bank-dev` profile。  
   Starts the `easy-bank-dev` profile.
-- `env/dev/00_minikube/wsl/05-status.sh`  
-  输出当前 Docker、kubectl、minikube 和 Kubernetes 状态。  
-  Prints the current Docker, kubectl, minikube, and Kubernetes status.
+- `env/dev/00_minikube/wsl/05-check-minikube-status.sh`  
+  检查当前 Docker、kubectl、minikube 和 Kubernetes 状态。  
+  Checks the current Docker, kubectl, minikube, and Kubernetes status.
+
+`env/dev/00_minikube/wsl/00-env.sh` 不是给开发人员单独执行的“步骤脚本”，而是供 `02-install-kubectl.sh`、`03-install-minikube.sh`、`04-start-minikube.sh`、`05-check-minikube-status.sh` 这类脚本内部通过 `source` 自动加载的变量文件。因此文档没有把它列为单独执行步骤。  
+`env/dev/00_minikube/wsl/00-env.sh` is not a standalone “step script” for developers to run directly. It is a variable file automatically loaded internally via `source` by scripts such as `02-install-kubectl.sh`, `03-install-minikube.sh`, `04-start-minikube.sh`, and `05-check-minikube-status.sh`. That is why the document does not list it as a separate execution step.
+
+如果后续确实需要改默认变量，例如 `MINIKUBE_PROFILE`、`MINIKUBE_CPUS`、`MINIKUBE_MEMORY`，有两种方式：  
+If you later need to change default variables such as `MINIKUBE_PROFILE`, `MINIKUBE_CPUS`, or `MINIKUBE_MEMORY`, there are two ways:
+
+- 直接编辑 `env/dev/00_minikube/wsl/00-env.sh`。  
+  Edit `env/dev/00_minikube/wsl/00-env.sh` directly.
+- 在运行具体脚本前先导出环境变量，例如：  
+  Export environment variables before running a concrete script, for example:
+
+```bash
+export MINIKUBE_CPUS=16
+export MINIKUBE_MEMORY=16384
+./env/dev/00_minikube/wsl/04-start-minikube.sh
+```
+
+不建议直接执行 `./env/dev/00_minikube/wsl/00-env.sh`，因为它本身只定义变量，不执行实际安装或启动动作；而且即使你单独执行，它也不会把变量保留到当前 shell 会话里。  
+It is not recommended to run `./env/dev/00_minikube/wsl/00-env.sh` directly, because it only defines variables and does not perform any real installation or startup action; and even if you run it directly, it will not keep those variables in your current shell session.
 
 ### 3.3 本机资源建议
 *Local Resource Recommendation*
 
-开发人员本机建议至少预留以下资源：  
-The local machine should ideally reserve at least the following resources:
+开发人员本机建议至少预留以下资源；当前 `env/dev/00_minikube/wsl/00-env.sh` 的默认值也按这组资源设置：  
+The local machine should ideally reserve at least the following resources; the current defaults in `env/dev/00_minikube/wsl/00-env.sh` are aligned to this same resource set:
 
-- `4 CPU`
-- `8 GB Memory`
+- `16 CPU`
+- `16 GB Memory`
 - `40 GB Disk`
 
-如果机器资源过低，`Docker Desktop + WSL2 + minikube` 的启动和运行会明显变慢，甚至失败。  
-If machine resources are too limited, `Docker Desktop + WSL2 + minikube` can become significantly slower or even fail.
+如果机器资源低于这组默认值，建议先下调 `MINIKUBE_CPUS` 和 `MINIKUBE_MEMORY`，否则 `Docker Desktop + WSL2 + minikube` 可能启动缓慢，甚至失败。  
+If machine resources are below these defaults, reduce `MINIKUBE_CPUS` and `MINIKUBE_MEMORY` first; otherwise `Docker Desktop + WSL2 + minikube` may start slowly or even fail.
 
 ### 3.4 Windows 侧安装与设置步骤
 *Windows-Side Installation and Setup Steps*
@@ -113,6 +133,39 @@ The following steps are performed in Windows 11 PowerShell. For steps that insta
 
 `.ps1` 是 `PowerShell Script` 文件，也就是给 Windows PowerShell 使用的脚本文件。它不是给 `cmd.exe` 用的，也不是给 `WSL bash` 用的。像 `env/dev/00_minikube/windows/10-install-wsl.ps1` 这类脚本，应该在 Windows 侧的 `PowerShell` 或 `Windows Terminal` 的 `PowerShell` 标签页里运行。  
 `.ps1` is a `PowerShell Script` file, which means it is intended for Windows PowerShell. It is not meant for `cmd.exe`, and it is not meant for `WSL bash`. Scripts such as `env/dev/00_minikube/windows/10-install-wsl.ps1` should be run from Windows-side `PowerShell` or a `PowerShell` tab in `Windows Terminal`.
+
+这里的“使用当前用户打开提升权限 PowerShell”需要单独说明：  
+The phrase “use your current user to open elevated PowerShell” needs a separate clarification:
+
+- “当前用户”指的是你平时登录 Windows 的那个账号。  
+  “Current user” means the Windows account you normally use to sign in.
+- “提升权限”指的是虽然还是这个账号，但把这次打开的 PowerShell 进程提升到管理员权限。  
+  “Elevated” means that even though it is still the same account, the PowerShell process itself is raised to administrator privileges.
+- 所以“当前用户打开提升权限 PowerShell”不等于“切换到内置 `Administrator` 账户”。  
+  So “current user with elevated PowerShell” is not the same thing as “switch to the built-in `Administrator` account.”
+
+可以简单理解成下面两种不同情况：  
+You can understand it as the following two different cases:
+
+- 普通打开 PowerShell：用户是你自己，但权限仍然是普通权限。  
+  Open PowerShell normally: the user is still you, but the privileges remain normal user privileges.
+- 以管理员身份运行 PowerShell：用户还是你自己，但这个 PowerShell 进程拿到了管理员权限。  
+  Run PowerShell as administrator: the user is still you, but that PowerShell process receives administrator privileges.
+
+如果你想判断当前 PowerShell 是否已经是“提升权限”状态，可以执行：  
+If you want to check whether the current PowerShell is already elevated, run:
+
+```powershell
+([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")
+```
+
+输出结果含义：  
+The output means:
+
+- `True`：当前 PowerShell 已提升权限。  
+  `True`: the current PowerShell is elevated.
+- `False`：当前只是普通打开。  
+  `False`: the current PowerShell was opened normally without elevation.
 
 推荐的运行方式如下：  
 The recommended way to run it is:
@@ -339,19 +392,140 @@ This script will:
 
 - 使用 Docker driver 启动 `easy-bank-dev` profile。  
   Start the `easy-bank-dev` profile with the Docker driver.
-- 启用 `storage-provisioner` 和 `default-storageclass`。  
-  Enable `storage-provisioner` and `default-storageclass`.
+- 启用 `storage-provisioner`、`default-storageclass`、`dashboard` 和 `metrics-server`。  
+  Enable `storage-provisioner`, `default-storageclass`, `dashboard`, and `metrics-server`.
 - 切换当前 `kubectl` context 到 `easy-bank-dev`。  
   Switch the current `kubectl` context to `easy-bank-dev`.
+
+如果后续需要打开 Dashboard，可以执行：  
+If you later need to open the Dashboard, run:
+
+```bash
+minikube dashboard --profile=easy-bank-dev --url
+```
+
+该命令会输出一个本地访问 URL。使用 Dashboard 时，对应终端窗口应保持打开。  
+This command prints a local access URL. Keep that terminal window open while using the Dashboard.
+
+`04-start-minikube.sh` 运行完成后，脚本本身也会打印下面这组提示信息；开发人员看到后，直接复制命令执行即可：  
+After `04-start-minikube.sh` finishes, the script itself also prints the following hint; developers can copy the command and run it directly:
+
+```text
+Dashboard hint:
+Run: minikube dashboard --profile=easy-bank-dev --url
+Keep that terminal open while using the dashboard URL.
+```
+
+建议的访问顺序如下：  
+The recommended access flow is:
+
+1. 先执行 `./env/dev/00_minikube/wsl/04-start-minikube.sh`。  
+   First run `./env/dev/00_minikube/wsl/04-start-minikube.sh`.
+2. 再执行 `minikube dashboard --profile=easy-bank-dev --url`。  
+   Then run `minikube dashboard --profile=easy-bank-dev --url`.
+3. 复制输出的本地 URL，到浏览器打开。  
+   Copy the printed local URL and open it in a browser.
+4. 保持这个终端窗口不要关闭，否则 Dashboard 访问会中断。  
+   Keep that terminal window open; otherwise the Dashboard connection will stop.
 
 #### 步骤 9：检查状态
 *Step 9: Check status*
 
 ```bash
-./env/dev/00_minikube/wsl/05-status.sh
+./env/dev/00_minikube/wsl/05-check-minikube-status.sh
 ```
 
-### 3.6 与后续环境文档的关系
+### 3.6 开发环境日常启停与状态检查
+*Daily Start, Stop, and Status Checks for Development*
+
+完成以上步骤后，开发人员后续最常见的操作，就是停止 `minikube`、再次启动 `minikube`，以及检查当前运行状态。以下命令都在 `WSL Ubuntu` 中执行。  
+After the above steps are completed, the most common follow-up operations are stopping `minikube`, starting `minikube` again, and checking the current runtime status. The following commands are all executed inside `WSL Ubuntu`.
+
+#### 停止 minikube
+*Stop minikube*
+
+如果当天开发结束，想释放本机资源，可以执行：  
+If development work is finished for the day and you want to release local machine resources, run:
+
+```bash
+minikube stop --profile=easy-bank-dev
+```
+
+这条命令会停止 `easy-bank-dev` 这个 profile 对应的本地 Kubernetes 集群，但不会删除这个 profile，也不会删除已经创建好的 Kubernetes 资源、PVC 或镜像缓存。  
+This command stops the local Kubernetes cluster for the `easy-bank-dev` profile, but it does not delete the profile itself, nor does it delete Kubernetes resources, PVCs, or cached images that were already created.
+
+#### 再次启动 minikube
+*Start minikube again*
+
+下次继续开发时，推荐仍然使用项目脚本：  
+When continuing development later, it is still recommended to use the project script:
+
+```bash
+./env/dev/00_minikube/wsl/04-start-minikube.sh
+```
+
+这里需要特别说明：重新运行 `04-start-minikube.sh`，通常不会把之前已经搭好的 `minikube` 集群删除重建。它的主要作用，是对同一个 `easy-bank-dev` profile 再执行一次 `minikube start`，把之前已经存在但当前停止状态的集群重新启动起来。  
+An important clarification here: running `04-start-minikube.sh` again will usually not delete and recreate the existing `minikube` cluster. Its main purpose is to run `minikube start` again for the same `easy-bank-dev` profile, bringing back a previously existing cluster that is currently stopped.
+
+因此在日常场景下，可以把它理解成“重新启动之前已经设置好的 minikube 集群”。  
+So in daily usage, it can be understood as “starting the previously configured minikube cluster again.”
+
+同时也要注意更准确的技术边界：  
+At the same time, the more precise technical boundary is:
+
+- 它不是单纯执行一次 Docker 容器启动，而是对同一个 profile 再执行一次 `minikube start`。  
+  It is not merely starting a Docker container once; it runs `minikube start` again against the same profile.
+- 它不会默认清空之前的 Kubernetes 资源、PVC、已部署数据库或已启用 addon。  
+  It does not clear previous Kubernetes resources, PVCs, deployed databases, or enabled addons by default.
+- 如果你改动了脚本变量，例如 CPU、内存、磁盘大小或 driver，再次运行时这些配置可能会重新应用到这个 profile。  
+  If you change script variables such as CPU, memory, disk size, or the driver, those settings may be applied again to this profile on the next run.
+
+如果你只想做最小化启动动作，也可以直接执行：  
+If you only want the smallest possible start action, you can also run:
+
+```bash
+minikube start --profile=easy-bank-dev
+```
+
+不过从项目一致性角度，优先推荐继续使用 `04-start-minikube.sh`。  
+However, from the perspective of project consistency, continuing to use `04-start-minikube.sh` is preferred.
+
+#### 常用状态检查命令
+*Common Status Check Commands*
+
+推荐优先使用项目脚本：  
+It is recommended to use the project script first:
+
+```bash
+./env/dev/00_minikube/wsl/05-check-minikube-status.sh
+```
+
+如果需要单独排查，也可以使用下面这些常用命令：  
+If you need to troubleshoot specific pieces, you can also use the following common commands:
+
+```bash
+minikube status --profile=easy-bank-dev
+kubectl config current-context
+kubectl get nodes
+kubectl get ns
+kubectl get pods -A
+```
+
+这些命令分别用于：  
+These commands are used for:
+
+- 检查 `easy-bank-dev` 这个 profile 当前是否已经启动。  
+  Checking whether the `easy-bank-dev` profile is currently running.
+- 检查当前 `kubectl` 是否指向正确的 context。  
+  Checking whether `kubectl` is pointing to the correct context.
+- 检查节点是否正常。  
+  Checking whether the node is healthy.
+- 检查 namespace 是否存在。  
+  Checking whether the namespace exists.
+- 检查所有 namespace 下的 Pod 是否正常启动。  
+  Checking whether Pods across all namespaces are starting correctly.
+
+### 3.7 与后续环境文档的关系
 *Relation to Later Environment Documents*
 
 `05-base-environment-setup.md` 只负责开发环境的基础底座。像 MySQL、Redis、Kafka 等具体基础设施部署，应在后续单独文档中继续展开。  

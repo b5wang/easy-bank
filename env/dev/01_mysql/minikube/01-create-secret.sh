@@ -8,8 +8,12 @@ MYSQL_ROOT_PASSWORD="${MYSQL_ROOT_PASSWORD:-$MYSQL_ROOT_PASSWORD_DEFAULT}"
 MYSQL_APP_USER="${MYSQL_APP_USER:-$MYSQL_APP_USER_DEFAULT}"
 MYSQL_APP_PASSWORD="${MYSQL_APP_PASSWORD:-$MYSQL_APP_PASSWORD_DEFAULT}"
 
+# Ensure the target namespace exists before creating resources inside it.
 kubectl apply -f "$K8S_DIR/namespace.yaml"
 
+# Store passwords in a Kubernetes Secret instead of hardcoding them into YAML files.
+# `--dry-run=client -o yaml | kubectl apply -f -` makes the command repeatable:
+# first run creates the Secret, later runs update it in place.
 kubectl -n "$K8S_NAMESPACE" create secret generic "$MYSQL_SECRET_NAME" \
     --from-literal=mysql-root-password="$MYSQL_ROOT_PASSWORD" \
     --from-literal=mysql-app-user="$MYSQL_APP_USER" \
