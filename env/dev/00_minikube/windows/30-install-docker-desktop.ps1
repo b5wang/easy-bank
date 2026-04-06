@@ -1,3 +1,23 @@
+<#
+Purpose:
+Install Docker Desktop for the easy-bank development environment.
+
+How to run:
+1. Download the Docker Desktop Windows installer first.
+2. Sign in with your current Windows user on Windows 11. Do not switch to the built-in Administrator account.
+3. Open PowerShell with "Run as administrator".
+4. Go to the repository root.
+5. Run:
+   Set-ExecutionPolicy -Scope Process Bypass
+   .\env\dev\00_minikube\windows\30-install-docker-desktop.ps1 -InstallerPath "C:\Users\<YourUser>\Downloads\Docker Desktop Installer.exe"
+
+Notes:
+- `.ps1` is a PowerShell script file.
+- Do not run this file inside WSL Ubuntu.
+- Prefer your current Windows user with elevated PowerShell; avoid the built-in Administrator account.
+- The `-InstallerPath` value must point to a real Docker Desktop installer `.exe` file on Windows.
+#>
+
 param(
     [Parameter(Mandatory = $true)]
     [string]$InstallerPath
