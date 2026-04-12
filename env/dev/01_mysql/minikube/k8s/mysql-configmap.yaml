@@ -1,0 +1,36 @@
+# ConfigMap stores the development-only MySQL base configuration.
+# The file is mounted into `/etc/mysql/conf.d/90-easy-bank-dev.cnf`.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: eb-mysql-config
+  namespace: easy-bank-dev
+data:
+  90-easy-bank-dev.cnf: |
+    [mysqld]
+    # Keep server defaults aligned with the project's database charset and case-sensitive collation.
+    character-set-server=utf8mb4
+    collation-server=utf8mb4_0900_as_cs
+
+    # Disable MySQL X Plugin because the project only uses classic MySQL/JDBC on port 3306.
+    mysqlx=OFF
+    # Disable binary logging in local development to reduce I/O and disk usage.
+    skip-log-bin
+    # Avoid DNS lookups on incoming connections; accounts should use IP or `%` host rules.
+    skip-name-resolve
+
+    # Let InnoDB size itself for a dedicated MySQL container.
+    innodb-dedicated-server=ON
+    # Development tradeoff: fewer fsync calls and better write latency, with a small crash-loss window.
+    innodb_flush_log_at_trx_commit=2
+
+    # Keep connection and table cache sizes modest for a low-resource development cluster.
+    max_connections=50
+    thread_cache_size=16
+    table_open_cache=512
+    table_definition_cache=512
+
+    # Cap temporary-table memory usage so ad hoc queries do not consume too much RAM.
+    tmp_table_size=32M
+    max_heap_table_size=32M
+    temptable_max_ram=64M

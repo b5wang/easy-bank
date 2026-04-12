@@ -8,6 +8,7 @@ source "$MYSQL_ENV_DIR/../../00_minikube/wsl/00-env.sh"
 MYSQL_DEPLOYMENT_NAME="${MYSQL_DEPLOYMENT_NAME:-eb-mysql}"
 MYSQL_SERVICE_NAME="${MYSQL_SERVICE_NAME:-eb-mysql}"
 MYSQL_SECRET_NAME="${MYSQL_SECRET_NAME:-eb-mysql-secret}"
+MYSQL_CONFIGMAP_NAME="${MYSQL_CONFIGMAP_NAME:-eb-mysql-config}"
 MYSQL_PVC_NAME="${MYSQL_PVC_NAME:-eb-mysql-data}"
 # Local port is for the developer machine; container port is the MySQL port inside Kubernetes.
 MYSQL_LOCAL_PORT="${MYSQL_LOCAL_PORT:-13306}"

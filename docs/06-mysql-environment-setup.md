@@ -80,8 +80,8 @@ The MySQL development-environment files are all placed under `env/dev/01_mysql/m
   创建开发环境 MySQL Secret。  
   Creates the development MySQL Secret.
 - `env/dev/01_mysql/minikube/02-deploy-mysql.sh`  
-  部署 namespace、PVC、Deployment 和 Service。  
-  Deploys the namespace, PVC, Deployment, and Service.
+  部署 namespace、`ConfigMap`、PVC、Deployment 和 Service。  
+  Deploys the namespace, `ConfigMap`, PVC, Deployment, and Service.
 - `env/dev/01_mysql/minikube/03-port-forward.sh`  
   把本机 `13306` 转发到集群内 `3306`。  
   Forwards local port `13306` to in-cluster port `3306`.
@@ -94,6 +94,9 @@ The MySQL development-environment files are all placed under `env/dev/01_mysql/m
 - `env/dev/01_mysql/minikube/k8s/mysql-pvc.yaml`  
   MySQL 数据持久化 PVC。  
   MySQL data-persistence PVC.
+- `env/dev/01_mysql/minikube/k8s/mysql-configmap.yaml`  
+  开发环境 MySQL 基础配置 `ConfigMap`，挂载成容器内的 `.cnf` 文件。  
+  The development MySQL base-configuration `ConfigMap`, mounted as a `.cnf` file inside the container.
 - `env/dev/01_mysql/minikube/k8s/mysql-deployment.yaml`  
   MySQL Deployment 清单。  
   MySQL Deployment manifest.
@@ -118,7 +121,60 @@ export MYSQL_LOCAL_PORT=23306
 不建议把 `00-env.sh` 当成独立步骤执行，因为它本身只负责定义变量，不执行部署动作。  
 It is not recommended to treat `00-env.sh` as a standalone execution step because it only defines variables and does not perform deployment actions.
 
-### 3.4 搭建步骤
+### 3.4 MySQL 镜像目录与开发环境基础配置
+*MySQL Image Paths and Development Base Configuration*
+
+当前开发环境使用官方镜像 `mysql:8.4.8`。为了让后续排查和调优有固定参照，先明确镜像内最关键的目录：  
+The current development environment uses the official image `mysql:8.4.8`. To give later troubleshooting and tuning a stable reference point, the most important in-image directories are defined first:
+
+- 主配置文件：`/etc/my.cnf`  
+  Main configuration file: `/etc/my.cnf`
+- 自定义配置目录：`/etc/mysql/conf.d/`  
+  Custom configuration directory: `/etc/mysql/conf.d/`
+- 数据目录：`/var/lib/mysql`  
+  Data directory: `/var/lib/mysql`
+- 初始化脚本目录：`/docker-entrypoint-initdb.d/`  
+  Initialization-script directory: `/docker-entrypoint-initdb.d/`
+
+开发环境额外新增一个 `ConfigMap`，文件位置是 `env/dev/01_mysql/minikube/k8s/mysql-configmap.yaml`，并把其中的 `90-easy-bank-dev.cnf` 挂载到容器内：  
+The development environment adds one extra `ConfigMap` at `env/dev/01_mysql/minikube/k8s/mysql-configmap.yaml`, and mounts its `90-easy-bank-dev.cnf` into the container at:
+
+```text
+/etc/mysql/conf.d/90-easy-bank-dev.cnf
+```
+
+当前开发环境 MySQL 基线配置如下：  
+The current development MySQL baseline configuration is:
+
+```ini
+[mysqld]
+character-set-server=utf8mb4
+collation-server=utf8mb4_0900_as_cs
+
+mysqlx=OFF
+skip-log-bin
+skip-name-resolve
+
+innodb-dedicated-server=ON
+innodb_flush_log_at_trx_commit=2
+
+max_connections=50
+thread_cache_size=16
+table_open_cache=512
+table_definition_cache=512
+
+tmp_table_size=32M
+max_heap_table_size=32M
+temptable_max_ram=64M
+```
+
+这些配置项的简要说明已经直接写在 `mysql-configmap.yaml` 的注释里。  
+Short explanations for these settings are written directly in the comments inside `mysql-configmap.yaml`.
+
+如果后续需要调整这些配置，修改 `mysql-configmap.yaml` 后，重新执行第 2 步 `./env/dev/01_mysql/minikube/02-deploy-mysql.sh` 即可；脚本会重新应用 `ConfigMap`，并在发现 Deployment 已存在时主动重启 MySQL Pod，让新配置真正生效。  
+If these settings need to be adjusted later, edit `mysql-configmap.yaml` and then re-run Step 2, `./env/dev/01_mysql/minikube/02-deploy-mysql.sh`; the script reapplies the `ConfigMap` and, if it finds that the Deployment already exists, actively restarts the MySQL Pod so the new settings really take effect.
+
+### 3.5 搭建步骤
 *Setup Steps*
 
 #### 步骤 1：创建 MySQL Secret
@@ -149,8 +205,11 @@ export MYSQL_APP_PASSWORD='change_me_app'
 ./env/dev/01_mysql/minikube/02-deploy-mysql.sh
 ```
 
-该脚本会创建 namespace、PVC、Deployment 和 Service，并等待 MySQL Pod 进入 Ready。  
-This script creates the namespace, PVC, Deployment, and Service, then waits for the MySQL Pod to become Ready.
+该脚本会创建或更新 namespace、`ConfigMap`、PVC、Deployment 和 Service，并等待 MySQL Pod 进入 Ready。  
+This script creates or updates the namespace, `ConfigMap`, PVC, Deployment, and Service, then waits for the MySQL Pod to become Ready.
+
+如果你后续改动了 `mysql-configmap.yaml` 中的配置项，再次执行这一步即可；脚本在发现 Deployment 已存在时会主动重启它，让新的 MySQL 配置生效。  
+If you later modify any setting in `mysql-configmap.yaml`, simply run this step again; if the script finds that the Deployment already exists, it actively restarts it so the new MySQL settings take effect.
 
 #### 步骤 3：打开本地访问端口
 *Step 3: Open the local access port*
@@ -167,6 +226,16 @@ After it succeeds, local clients can connect to:
 
 - Host: `127.0.0.1`
 - Port: `13306`
+
+这里需要特别说明：这一步是临时 `port-forward`，不是永久暴露端口。因此只要下面任一情况发生，就需要重新执行一次 `03-port-forward.sh`：  
+An important clarification here: this step is a temporary `port-forward`, not a permanent exposed port. So `03-port-forward.sh` must be run again whenever any of the following happens:
+
+- 关闭了运行该脚本的终端窗口。  
+  The terminal window running the script is closed.
+- 执行过 `minikube stop`，之后又重新启动了 `minikube`。  
+  `minikube stop` was run and `minikube` was started again later.
+- `eb-mysql` Pod 因为重建、滚动更新或故障恢复而发生切换。  
+  The `eb-mysql` Pod changes because of recreation, rollout, or failure recovery.
 
 #### 步骤 4：初始化数据库
 *Step 4: Initialize the databases*
@@ -210,7 +279,7 @@ mysql -h 127.0.0.1 -P 13306 -u eb_app -p
 如果你在第 1 步里使用了自定义 `MYSQL_APP_USER`，请把上面命令中的 `eb_app` 替换成实际用户名。  
 If you used a custom `MYSQL_APP_USER` in Step 1, replace `eb_app` in the command above with the actual username.
 
-### 3.5 固定访问地址与数据库名
+### 3.6 固定访问地址与数据库名
 *Fixed Access Addresses and Database Names*
 
 容器内微服务统一使用下面的固定地址和端口访问 MySQL：  
@@ -246,7 +315,7 @@ A typical JDBC URL example is:
 jdbc:mysql://eb-mysql.easy-bank-dev.svc.cluster.local:3306/eb_auth?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Singapore
 ```
 
-### 3.6 数据持久化说明
+### 3.7 数据持久化说明
 *Data Persistence Notes*
 
 开发环境中，MySQL 数据目录挂载到 PVC `eb-mysql-data`，因此以下情况不会直接清空数据：  
@@ -262,12 +331,13 @@ In the development environment, the MySQL data directory is mounted to the PVC `
 但如果执行 `minikube delete --profile easy-bank-dev` 或手动删除 PVC，开发环境数据就会被清空。  
 However, if `minikube delete --profile easy-bank-dev` is run or the PVC is deleted manually, the development data is cleared.
 
-### 3.7 常用检查命令
+### 3.8 常用检查命令
 *Common Inspection Commands*
 
 ```bash
 kubectl -n easy-bank-dev get pods
 kubectl -n easy-bank-dev get svc
+kubectl -n easy-bank-dev get configmap eb-mysql-config
 kubectl -n easy-bank-dev get pvc
 kubectl -n easy-bank-dev logs deployment/eb-mysql
 ```
