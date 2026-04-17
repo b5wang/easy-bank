@@ -1,0 +1,14 @@
+# ClusterIP Service gives applications one stable Sentinel endpoint for service discovery.
+apiVersion: v1
+kind: Service
+metadata:
+  name: eb-redis-sentinel
+  namespace: easy-bank-dev
+spec:
+  type: ClusterIP
+  selector:
+    app: eb-redis
+  ports:
+    - name: sentinel
+      port: 26379
+      targetPort: 26379

@@ -123,6 +123,7 @@ Recommended naming examples include module names such as `eb-service-account`, d
 - [docs/04-technology-selection.md](docs/04-technology-selection.md)
 - [docs/05-base-environment-setup.md](docs/05-base-environment-setup.md)
 - [docs/06-mysql-environment-setup.md](docs/06-mysql-environment-setup.md)
+- [docs/07-redis-environment-setup.md](docs/07-redis-environment-setup.md)
 
 ## 当前项目结构
 *Current Project Structure*

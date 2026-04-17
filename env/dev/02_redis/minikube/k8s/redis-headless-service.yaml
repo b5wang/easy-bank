@@ -1,0 +1,14 @@
+# Headless Service provides stable DNS names for StatefulSet Pods.
+apiVersion: v1
+kind: Service
+metadata:
+  name: eb-redis-headless
+  namespace: easy-bank-dev
+spec:
+  clusterIP: None
+  selector:
+    app: eb-redis
+  ports:
+    - name: redis
+      port: 6379
+      targetPort: 6379

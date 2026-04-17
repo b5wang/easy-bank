@@ -1,0 +1,5 @@
+# Namespace keeps all easy-bank development resources grouped together.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: easy-bank-dev
