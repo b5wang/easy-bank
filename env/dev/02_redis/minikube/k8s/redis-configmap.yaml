@@ -1,51 +1,23 @@
-# ConfigMap stores the Redis and Sentinel startup scripts used by the development cluster.
-# The scripts generate runtime config files under `/data`, where Redis and Sentinel can
-# preserve state across Pod restarts.
+# ConfigMap stores Redis and Sentinel configuration templates.
+# An initContainer renders these templates into writable files under `/data`
+# before the main Redis and Sentinel containers start.
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: eb-redis-config
   namespace: easy-bank-dev
 data:
-  redis-bootstrap.sh: |
-    #!/bin/sh
-    set -eu
-
-    POD_NAME="${HOSTNAME}"
-    CURRENT_FQDN="${POD_NAME}.${REDIS_HEADLESS_SERVICE_NAME}.${K8S_NAMESPACE}.svc.cluster.local"
-    SENTINEL_STATE_FILE="/data/sentinel/sentinel.conf"
-    REDIS_CONF_DIR="/data/conf"
-    REDIS_CONF_FILE="${REDIS_CONF_DIR}/redis.conf"
-
-    # On the first boot, replicas follow `eb-redis-0`. After Sentinel failover,
-    # later restarts read the last known master from Sentinel's persisted state.
-    detect_master_host() {
-      if [ -f "${SENTINEL_STATE_FILE}" ]; then
-        host="$(awk -v master_name="${REDIS_MASTER_NAME}" '$1 == "sentinel" && $2 == "monitor" && $3 == master_name {print $4; exit}' "${SENTINEL_STATE_FILE}")"
-        if [ -n "${host}" ]; then
-          printf '%s\n' "${host}"
-          return 0
-        fi
-      fi
-
-      printf '%s\n' "${REDIS_MASTER_POD_FQDN}"
-    }
-
-    MASTER_HOST="$(detect_master_host)"
-
-    mkdir -p "${REDIS_CONF_DIR}" /data/sentinel
-
-    cat > "${REDIS_CONF_FILE}" <<EOF
+  redis.conf.tpl: |
     bind 0.0.0.0
     protected-mode no
-    port ${REDIS_PORT}
+    port __REDIS_PORT__
     dir /data
     daemonize no
     loglevel notice
 
     # Password authentication is enabled so replicas and applications must authenticate.
-    requirepass ${REDIS_PASSWORD}
-    masterauth ${REDIS_PASSWORD}
+    requirepass __REDIS_PASSWORD__
+    masterauth __REDIS_PASSWORD__
 
     # Persistence is enabled because Redis also carries idempotency keys, locks,
     # and short-lived state that should not disappear casually in development.
@@ -59,52 +31,94 @@ data:
 
     # These values intentionally trade "small footprint" and "good enough speed"
     # for development, while refusing to evict important keys unexpectedly.
-    maxmemory ${REDIS_MAXMEMORY}
+    maxmemory __REDIS_MAXMEMORY__
     maxmemory-policy noeviction
     repl-diskless-sync yes
     repl-diskless-sync-delay 1
     tcp-keepalive 60
     timeout 0
 
-    # Sentinel hostname support works better when replicas announce stable DNS names.
-    replica-announce-ip ${CURRENT_FQDN}
-    replica-announce-port ${REDIS_PORT}
-    EOF
+    # Pod DNS names are used so Redis replicas can keep a stable advertised address.
+    replica-announce-ip __CURRENT_FQDN__
+    replica-announce-port __REDIS_PORT__
 
-    if [ "${CURRENT_FQDN}" != "${MASTER_HOST}" ] && [ "${POD_NAME}" != "${MASTER_HOST}" ]; then
-      printf 'replicaof %s %s\n' "${MASTER_HOST}" "${REDIS_PORT}" >> "${REDIS_CONF_FILE}"
-    fi
+    # Role-specific lines are written separately by the initContainer.
+    include /data/conf/role.conf
 
-    exec redis-server "${REDIS_CONF_FILE}"
+  sentinel.conf.tpl: |
+    port __REDIS_SENTINEL_PORT__
+    dir /data/sentinel
+    protected-mode no
+    sentinel resolve-hostnames yes
+    sentinel announce-hostnames yes
+    sentinel announce-ip __CURRENT_FQDN__
+    sentinel announce-port __REDIS_SENTINEL_PORT__
+    sentinel monitor __REDIS_MASTER_NAME__ __REDIS_MASTER_POD_FQDN__ __REDIS_PORT__ __REDIS_SENTINEL_QUORUM__
+    sentinel auth-pass __REDIS_MASTER_NAME__ __REDIS_PASSWORD__
+    sentinel down-after-milliseconds __REDIS_MASTER_NAME__ __REDIS_SENTINEL_DOWN_AFTER_MS__
+    sentinel failover-timeout __REDIS_MASTER_NAME__ __REDIS_SENTINEL_FAILOVER_TIMEOUT_MS__
+    sentinel parallel-syncs __REDIS_MASTER_NAME__ __REDIS_SENTINEL_PARALLEL_SYNCS__
 
-  sentinel-bootstrap.sh: |
+  render-config.sh: |
     #!/bin/sh
     set -eu
 
     POD_NAME="${HOSTNAME}"
     CURRENT_FQDN="${POD_NAME}.${REDIS_HEADLESS_SERVICE_NAME}.${K8S_NAMESPACE}.svc.cluster.local"
+    REDIS_CONF_DIR="/data/conf"
+    REDIS_CONF_FILE="${REDIS_CONF_DIR}/redis.conf"
+    ROLE_CONF_FILE="${REDIS_CONF_DIR}/role.conf"
     SENTINEL_DIR="/data/sentinel"
     SENTINEL_CONF_FILE="${SENTINEL_DIR}/sentinel.conf"
+    REDIS_TEMPLATE_FILE="/opt/redis/config-src/redis.conf.tpl"
+    SENTINEL_TEMPLATE_FILE="/opt/redis/config-src/sentinel.conf.tpl"
 
-    mkdir -p "${SENTINEL_DIR}"
+    mkdir -p "${REDIS_CONF_DIR}" "${SENTINEL_DIR}"
 
-    # Sentinel rewrites its own config file during failover, so the file must live
-    # on writable storage rather than on a read-only ConfigMap mount.
-    if [ ! -f "${SENTINEL_CONF_FILE}" ]; then
-      cat > "${SENTINEL_CONF_FILE}" <<EOF
-      port ${REDIS_SENTINEL_PORT}
-      dir ${SENTINEL_DIR}
-      protected-mode no
-      sentinel resolve-hostnames yes
-      sentinel announce-hostnames yes
-      sentinel announce-ip ${CURRENT_FQDN}
-      sentinel announce-port ${REDIS_SENTINEL_PORT}
-      sentinel monitor ${REDIS_MASTER_NAME} ${REDIS_MASTER_POD_FQDN} ${REDIS_PORT} ${REDIS_SENTINEL_QUORUM}
-      sentinel auth-pass ${REDIS_MASTER_NAME} ${REDIS_PASSWORD}
-      sentinel down-after-milliseconds ${REDIS_MASTER_NAME} ${REDIS_SENTINEL_DOWN_AFTER_MS}
-      sentinel failover-timeout ${REDIS_MASTER_NAME} ${REDIS_SENTINEL_FAILOVER_TIMEOUT_MS}
-      sentinel parallel-syncs ${REDIS_MASTER_NAME} ${REDIS_SENTINEL_PARALLEL_SYNCS}
-      EOF
+    # On the first boot, replicas follow `eb-redis-0`. After Sentinel failover,
+    # later restarts read the last known master from Sentinel's persisted state.
+    detect_master_host() {
+      if [ -f "${SENTINEL_CONF_FILE}" ]; then
+        host="$(awk -v master_name="${REDIS_MASTER_NAME}" '$1 == "sentinel" && $2 == "monitor" && $3 == master_name {print $4; exit}' "${SENTINEL_CONF_FILE}")"
+        if [ -n "${host}" ]; then
+          printf '%s\n' "${host}"
+          return 0
+        fi
+      fi
+
+      printf '%s\n' "${REDIS_MASTER_POD_FQDN}"
+    }
+
+    render_template() {
+      template_file="$1"
+      output_file="$2"
+      sed \
+        -e "s|__CURRENT_FQDN__|${CURRENT_FQDN}|g" \
+        -e "s|__REDIS_PASSWORD__|${REDIS_PASSWORD}|g" \
+        -e "s|__REDIS_MASTER_NAME__|${REDIS_MASTER_NAME}|g" \
+        -e "s|__REDIS_MASTER_POD_FQDN__|${REDIS_MASTER_POD_FQDN}|g" \
+        -e "s|__REDIS_PORT__|${REDIS_PORT}|g" \
+        -e "s|__REDIS_SENTINEL_PORT__|${REDIS_SENTINEL_PORT}|g" \
+        -e "s|__REDIS_MAXMEMORY__|${REDIS_MAXMEMORY}|g" \
+        -e "s|__REDIS_SENTINEL_QUORUM__|${REDIS_SENTINEL_QUORUM}|g" \
+        -e "s|__REDIS_SENTINEL_DOWN_AFTER_MS__|${REDIS_SENTINEL_DOWN_AFTER_MS}|g" \
+        -e "s|__REDIS_SENTINEL_FAILOVER_TIMEOUT_MS__|${REDIS_SENTINEL_FAILOVER_TIMEOUT_MS}|g" \
+        -e "s|__REDIS_SENTINEL_PARALLEL_SYNCS__|${REDIS_SENTINEL_PARALLEL_SYNCS}|g" \
+        "$template_file" > "$output_file"
+    }
+
+    MASTER_HOST="$(detect_master_host)"
+
+    render_template "${REDIS_TEMPLATE_FILE}" "${REDIS_CONF_FILE}"
+
+    if [ "${CURRENT_FQDN}" = "${MASTER_HOST}" ] || [ "${POD_NAME}" = "${MASTER_HOST}" ]; then
+      : > "${ROLE_CONF_FILE}"
+    else
+      printf 'replicaof %s %s\n' "${MASTER_HOST}" "${REDIS_PORT}" > "${ROLE_CONF_FILE}"
     fi
 
-    exec redis-server "${SENTINEL_CONF_FILE}" --sentinel
+    # Sentinel rewrites its own config file during failover, so keep the runtime copy
+    # under `/data/sentinel`. Only create it on first boot.
+    if [ ! -f "${SENTINEL_CONF_FILE}" ]; then
+      render_template "${SENTINEL_TEMPLATE_FILE}" "${SENTINEL_CONF_FILE}"
+    fi

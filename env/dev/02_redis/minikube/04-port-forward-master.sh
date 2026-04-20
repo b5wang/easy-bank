@@ -60,4 +60,6 @@ fi
 
 echo "Current Redis master: ${master_host}:${master_port}"
 echo "Forwarding 127.0.0.1:${REDIS_LOCAL_MASTER_PORT} -> pod/${master_pod}:${master_port}"
+echo "For host-side Redis GUI/data access use host 127.0.0.1, port ${REDIS_LOCAL_MASTER_PORT}."
+echo "Leave 'Master Group Name' blank because this is a direct Redis connection, not Sentinel mode."
 kubectl -n "$K8S_NAMESPACE" port-forward "pod/${master_pod}" "${REDIS_LOCAL_MASTER_PORT}:${master_port}"

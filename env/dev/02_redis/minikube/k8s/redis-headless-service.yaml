@@ -6,6 +6,9 @@ metadata:
   namespace: easy-bank-dev
 spec:
   clusterIP: None
+  # Redis replicas and Sentinel need stable Pod DNS names before the Pods become Ready,
+  # otherwise bootstrap and failover discovery can fail during startup.
+  publishNotReadyAddresses: true
   selector:
     app: eb-redis
   ports:

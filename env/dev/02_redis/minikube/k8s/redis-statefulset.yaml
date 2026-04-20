@@ -17,13 +17,13 @@ spec:
         app: eb-redis
     spec:
       terminationGracePeriodSeconds: 30
-      containers:
-        - name: redis
+      initContainers:
+        - name: render-config
           image: redis:8.6.0
           imagePullPolicy: IfNotPresent
           command:
             - /bin/sh
-            - /opt/redis/config-src/redis-bootstrap.sh
+            - /opt/redis/config-src/render-config.sh
           env:
             - name: K8S_NAMESPACE
               value: easy-bank-dev
@@ -35,8 +35,44 @@ spec:
               value: eb-redis-0.eb-redis-headless.easy-bank-dev.svc.cluster.local
             - name: REDIS_PORT
               value: "6379"
+            - name: REDIS_SENTINEL_PORT
+              value: "26379"
             - name: REDIS_MAXMEMORY
               value: 256mb
+            - name: REDIS_SENTINEL_QUORUM
+              value: "2"
+            - name: REDIS_SENTINEL_DOWN_AFTER_MS
+              value: "10000"
+            - name: REDIS_SENTINEL_FAILOVER_TIMEOUT_MS
+              value: "60000"
+            - name: REDIS_SENTINEL_PARALLEL_SYNCS
+              value: "1"
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: eb-redis-secret
+                  key: redis-password
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi
+          volumeMounts:
+            - name: redis-config
+              mountPath: /opt/redis/config-src
+              readOnly: true
+            - name: redis-data
+              mountPath: /data
+      containers:
+        - name: redis
+          image: redis:8.6.0
+          imagePullPolicy: IfNotPresent
+          command:
+            - redis-server
+            - /data/conf/redis.conf
+          env:
             - name: REDIS_PASSWORD
               valueFrom:
                 secretKeyRef:
@@ -77,40 +113,15 @@ spec:
               mountPath: /opt/redis/config-src
               readOnly: true
             - name: redis-data
-              # `/data` keeps both Redis persistence files and the writable Sentinel state file.
+              # `/data` keeps rendered config files, persistence files, and Sentinel state.
               mountPath: /data
         - name: sentinel
           image: redis:8.6.0
           imagePullPolicy: IfNotPresent
           command:
-            - /bin/sh
-            - /opt/redis/config-src/sentinel-bootstrap.sh
-          env:
-            - name: K8S_NAMESPACE
-              value: easy-bank-dev
-            - name: REDIS_HEADLESS_SERVICE_NAME
-              value: eb-redis-headless
-            - name: REDIS_MASTER_NAME
-              value: ebmaster
-            - name: REDIS_MASTER_POD_FQDN
-              value: eb-redis-0.eb-redis-headless.easy-bank-dev.svc.cluster.local
-            - name: REDIS_PORT
-              value: "6379"
-            - name: REDIS_SENTINEL_PORT
-              value: "26379"
-            - name: REDIS_SENTINEL_QUORUM
-              value: "2"
-            - name: REDIS_SENTINEL_DOWN_AFTER_MS
-              value: "10000"
-            - name: REDIS_SENTINEL_FAILOVER_TIMEOUT_MS
-              value: "60000"
-            - name: REDIS_SENTINEL_PARALLEL_SYNCS
-              value: "1"
-            - name: REDIS_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: eb-redis-secret
-                  key: redis-password
+            - redis-server
+            - /data/sentinel/sentinel.conf
+            - --sentinel
           ports:
             - name: sentinel
               containerPort: 26379
@@ -151,7 +162,7 @@ spec:
         - name: redis-config
           configMap:
             name: eb-redis-config
-            # ConfigMap scripts must be executable inside the containers.
+            # The initContainer reads templates and the render script from this ConfigMap.
             defaultMode: 493
   volumeClaimTemplates:
     - metadata:
